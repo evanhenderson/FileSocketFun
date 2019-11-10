@@ -8,3 +8,9 @@ public class ClientController {
         this.view = new ClientDemoView(this);
     }
 }
+
+class Main {
+    public static void main(String[] args) {
+        new ClientController(new ClientModel());
+    }
+}
