@@ -13,6 +13,12 @@ public class ClientController {
         this.model = model;
         this.view = new ClientDemoView(this);
     }
+    public void setUser() {
+
+    }
+    public void imageListSet() {
+
+    }
 }
 
 class Main {
@@ -35,11 +41,7 @@ class Main {
                 if (in.ready()){
                     // the server has sent something to us (client)
                     String serverResponse = in.readLine();
-                    System.out.println("Server sent: " + serverResponse);
-                    if (serverResponse.equals("closing")){
-                        System.out.println("Terminating program... ");
-                        break;
-                    }
+                    model.reveiveData(serverResponse);
                 }
             }
         }catch(IOException e){
