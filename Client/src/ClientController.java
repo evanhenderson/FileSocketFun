@@ -23,8 +23,10 @@ public class ClientController {
 
 class Main {
     public static void main(String[] args) {
-        new ClientController(new ClientModel());
-        String ipAddress = view.serverIP;
+        ClientModel model = new ClientModel();
+        ClientController controller = new ClientController(model);
+        //shouldn't all of this be in the Model??
+        String ipAddress = controller.view.serverIP;
         int portNumber = 8080;
         try{
             Socket clientSocket = new Socket(ipAddress, portNumber);
@@ -41,12 +43,11 @@ class Main {
                 if (in.ready()){
                     // the server has sent something to us (client)
                     String serverResponse = in.readLine();
-                    model.reveiveData(serverResponse);
+                    model.receiveData(serverResponse);
                 }
             }
         }catch(IOException e){
             e.printStackTrace();
-        }
         }
     }
 }

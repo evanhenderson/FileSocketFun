@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+
 public class ServerModel {
     String[] imageList;
     String[][] userList;
