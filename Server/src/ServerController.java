@@ -2,30 +2,24 @@ import java.net.*;
 import java.io.*;
 public class ServerController {
     ServerModel model;
-    try{
-        ServerSocket serverSocket = new ServerSocket(8080);
-    }catch(IOException exception){
-        exception.printStackTrace();
-    }
-    try{
-        Socket clientSocket = serverSocket.accept();
-    }catch(IOException exception){
-        exception.printStackTrace();
-    }
-    ServerController(ServerModel model){
+    ServerSocket serverSocket = new ServerSocket(8080);
+    Socket clientSocket = serverSocket.accept();
+    ServerController(ServerModel model) throws IOException {
         this.model = model;
 
     }
-    public void start(){
+    public void start() throws IOException {
+        OutputStream out = null;
+        InputStream in = null;
         try {
-            OutputStream out = new FileOutputStream("C:\\Users\\evanh\\OneDrive\\" +
+            out = new FileOutputStream("C:\\Users\\evanh\\OneDrive\\" +
                     "Documents\\GitHub\\FileSocketFun\\" +
                     "Server\\files\\file.jpg");
         }catch(IOException exception){
             exception.printStackTrace();
         }
         try {
-            InputStream in = clientSocket.getInputStream();
+            in = clientSocket.getInputStream();
         }catch(IOException exception){
             exception.printStackTrace();
         }
@@ -39,7 +33,7 @@ public class ServerController {
        new Thread(){
            public void run(){
                try{
-                   ServerController controller =  new ServerController(new ServerModel);
+                   ServerController controller =  new ServerController(new ServerModel());
                    controller.start();
                }catch(IOException e){
                    e.printStackTrace();
