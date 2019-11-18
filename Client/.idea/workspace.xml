@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d4dda899-dbb6-4b47-82db-5c8e1427a3a9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Server/src/ServerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ServerController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/database/serverdatabase.db" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/src/FileDataType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/src/UserDataType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/ServerModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ServerModel.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
