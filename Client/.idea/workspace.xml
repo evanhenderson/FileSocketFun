@@ -2,18 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d4dda899-dbb6-4b47-82db-5c8e1427a3a9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Client.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Server/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Server/.idea/Server.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Server/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Server/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Server/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ClientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClientController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ClientModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClientModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/.idea/Server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/.idea/Server.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/ServerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ServerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/ServerModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ServerModel.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,7 +19,7 @@
   <component name="ProjectId" id="1TSQGxddv4O0icXjgabjB9g5QVS" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../SQLiteFun" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -59,7 +51,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
