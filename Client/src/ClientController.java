@@ -7,7 +7,7 @@ import java.net.Socket;
 public class ClientController {
 
     protected ClientModel model;
-    protected ClientView view;
+    protected ClientDemoView view;
 
     public ClientController(ClientModel model) {
         this.model = model;
@@ -19,12 +19,9 @@ public class ClientController {
     public void imageListSet() {
 
     }
-}
-
-class Main {
     public static void main(String[] args) {
-        new ClientController(new ClientModel());
-        String ipAddress = view.serverIP;
+        ClientController controller = new ClientController(new ClientModel());
+        String ipAddress = controller.view.serverIP.getText();
         int portNumber = 8080;
         try{
             Socket clientSocket = new Socket(ipAddress, portNumber);
@@ -41,7 +38,7 @@ class Main {
                 if (in.ready()){
                     // the server has sent something to us (client)
                     String serverResponse = in.readLine();
-                    model.reveiveData(serverResponse);
+                    controller.model.receiveData(serverResponse);
                 }
             }
         }catch(IOException e){
@@ -49,4 +46,4 @@ class Main {
         }
         }
     }
-}
+

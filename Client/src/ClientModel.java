@@ -1,4 +1,7 @@
 public class ClientModel {
+    ClientController controller;
+    public ClientModel(){
+    }
     public void sendData(){
 
     }

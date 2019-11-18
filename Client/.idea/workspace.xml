@@ -2,10 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d4dda899-dbb6-4b47-82db-5c8e1427a3a9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/Client.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Client.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ClientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClientController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ClientModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClientModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/.idea/Server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/.idea/Server.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/src/ServerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ServerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/src/ServerModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ServerModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/.idea/misc.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
