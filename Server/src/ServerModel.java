@@ -1,9 +1,8 @@
 import java.io.*;
 import java.nio.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerModel {
     //databases need a name
@@ -83,7 +82,104 @@ public class ServerModel {
             }
         }
     }
+    public void insertFile(FileDataType file){
 
+        String sqlInsert = "INSERT INTO " + TABLE_FILES + " VALUES(null, '" +
+                file.getTitle() + "', '" +
+                file.getPath() + "')";
+        System.out.println(sqlInsert);
+        if (connection != null){
+            try{
+                Statement statement = connection.createStatement();
+                statement.execute(sqlInsert);
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
+    public void insertUser(UserDataType user){
+
+        String sqlInsert = "INSERT INTO " + TABLE_USERS + " VALUES(null, '" +
+                user.getUsername() + "', '" +
+                user.getPassword() + "')";
+        System.out.println(sqlInsert);
+        if (connection != null){
+            try{
+                Statement statement = connection.createStatement();
+                statement.execute(sqlInsert);
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
+    public List<FileDataType> getAllFilesList(){
+        List<FileDataType> filesList = new ArrayList<>();
+        //iterate through each record in our table
+        //extract the column values
+        //create a contract
+        //add the contact to the list
+        //much like I/O while(inFile.nextLine()) {}
+        //while (inFile.eof() {}
+        //SELECT * FROM tableContacts
+        String sqlSelect = "SELECT * FROM " + TABLE_FILES;
+        System.out.println(sqlSelect);
+        if (connection != null){
+            try {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sqlSelect);
+                //need to advance to the first record (if there is one)
+                while(resultSet.next()) { //returns false when there are no more records
+                    int id = resultSet.getInt(ID);
+                    String title = resultSet.getString(TITLE);
+                    String path = resultSet.getString(PATH);
+                    FileDataType fileDataType = new FileDataType(id, title, path);
+                    filesList.add(fileDataType);
+                }
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return filesList;
+    }
+    public List<UserDataType> getAllUsersList(){
+        List<UserDataType> usersList = new ArrayList<>();
+        //iterate through each record in our table
+        //extract the column values
+        //create a contract
+        //add the contact to the list
+        //much like I/O while(inFile.nextLine()) {}
+        //while (inFile.eof() {}
+        //SELECT * FROM tableContacts
+        String sqlSelect = "SELECT * FROM " + TABLE_USERS;
+        System.out.println(sqlSelect);
+        if (connection != null){
+            try {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sqlSelect);
+                //need to advance to the first record (if there is one)
+                while(resultSet.next()) { //returns false when there are no more records
+                    int id = resultSet.getInt(ID);
+                    String username = resultSet.getString(USERNAME);
+                    String password = resultSet.getString(PASSWORD);
+                    UserDataType usersDataType = new UserDataType(id, username, password);
+                    usersList.add(usersDataType);
+                }
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return usersList;
+    }
+    public void closeConnection(){
+        //close the connection (just like a file we've opened)
+        if (connection != null){
+            try{
+                connection.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
 
 
 
