@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 public class ClientDemoView extends ClientView {
 
@@ -15,7 +17,7 @@ public class ClientDemoView extends ClientView {
     public ClientDemoView(ClientController controller){
         this.controller = controller;
         setPreferredSize(new Dimension(500, 400));
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setVisible(true);
         setupUI();
         pack();
@@ -28,22 +30,29 @@ public class ClientDemoView extends ClientView {
         fileSearch.setHorizontalAlignment(JButton.RIGHT);
         sendFile = new JButton("Send");
         imageName = new JLabel("Image Preview: ");
-        imageName.setHorizontalAlignment(JLabel.LEFT);
+        imageName.setHorizontalAlignment(JLabel.CENTER);
         welcomeLabel = new JLabel("Welcome to FileSocketFun!");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
         welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
         imagePreview = new JLabel();
+        imagePreview.setIcon(new ImageIcon(System.getProperty("user.dir") + controller.fileSeparator + "Client"
+                + controller.fileSeparator + "Cache" + controller.fileSeparator + "placeholder.jpg"));
+
 
         getContentPane().add(welcomeLabel, BorderLayout.NORTH);
         getContentPane().add(sendFile, BorderLayout.SOUTH);
+        JPanel outerCenter = new JPanel(new BorderLayout());
+        outerCenter.add(serverIP, BorderLayout.NORTH);
         JPanel centerPanel = new JPanel();
-        GridBagLayout grid = new GridBagLayout();
-        centerPanel.setLayout(grid);
-        centerPanel.add(serverIP);
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        outerCenter.add(centerPanel, BorderLayout.CENTER);
         centerPanel.add(imageName);
-        centerPanel.add(imagePreview);
-        centerPanel.add(fileSearch);
-        getContentPane().add(centerPanel, BorderLayout.CENTER);
+        JPanel innerCenterPanel = new JPanel();
+        innerCenterPanel.setLayout(new BoxLayout(innerCenterPanel, BoxLayout.X_AXIS));
+        innerCenterPanel.add(imagePreview);
+        innerCenterPanel.add(fileSearch);
+        centerPanel.add(innerCenterPanel);
+        getContentPane().add(outerCenter, BorderLayout.CENTER);
 
     }
 }
