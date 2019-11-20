@@ -12,6 +12,7 @@ public class ClientController {
     protected ClientDemoView view;
     protected String serverIP;
     protected ImageIcon image;
+    protected String imageName;
     protected String fileSeparator = System.getProperty("file.separator");
 
 
@@ -20,13 +21,32 @@ public class ClientController {
         model.setController(this);
         this.view = new ClientDemoView(this);
         view.fileSearch.addActionListener(new ActionListener() {
+
+            private ImageIcon resizeImage(ImageIcon image) {
+                //resizing the image so that it fits within the range
+                Image unscaledImage = image.getImage();
+                int imageHeight = image.getIconHeight();
+                int imageWidth = image.getIconWidth();
+                if(imageWidth > 350) {
+                    imageWidth = 350;
+                    imageHeight = (imageWidth * image.getIconHeight()) / image.getIconWidth();
+                } if(imageHeight > 240) {
+                    imageHeight = 240;
+                    imageWidth = (imageHeight * image.getIconWidth()) / image.getIconHeight();
+                }
+                Image scaledImage = unscaledImage.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
+                return new ImageIcon(scaledImage);
+            }
+
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                  FileDialog file = null;
                  file = new FileDialog(view, "What photo would you like to send?", FileDialog.LOAD);
-                 if(file != null) {
                      file.setVisible(true);
-                     File theFile = new File(file.getFile());
+                     File theFile = null;
+                     String findTheFile = file.getFile();
+                     if(findTheFile != null) {
+                     theFile = new File(findTheFile);
                      String theFileName = theFile.getName();
                      String pathToCachedFile = System.getProperty("user.dir") + fileSeparator + "Client"
                              + fileSeparator + "Cache" + fileSeparator;
@@ -39,24 +59,11 @@ public class ClientController {
                      }
 
                      image = new ImageIcon(pathToCachedFile + theFileName);
-
-                     //resizing the image so that it fits within the range
-                     Image unscaledImage = image.getImage();
-                     int imageHeight = image.getIconHeight();
-                     int imageWidth = image.getIconWidth();
-                     if(imageWidth > 350) {
-                         imageWidth = 350;
-                         imageHeight = (imageWidth * image.getIconHeight()) / image.getIconWidth();
-                     } if(imageHeight > 240) {
-                            imageHeight = 240;
-                            imageWidth = (imageHeight * image.getIconWidth()) / image.getIconHeight();
-                     }
-                     Image scaledImage = unscaledImage.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
-                     image = new ImageIcon(scaledImage);
+                     image = resizeImage(image);
                      view.imagePreview.setIcon(image);
                      view.imagePreview.setText(" ");
                      view.imageName.setText(theFileName);
-                 }
+                     }
 
 
             }
@@ -65,6 +72,12 @@ public class ClientController {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 serverIP = view.serverIP.getText();
+                imageName = view.imageName.getText();
+                if(serverIP.equals("")) {
+                    view.warningMessage.setText("Please enter a valid server IP!");
+                } else if (imageName.equals("Image Preview: ")) {
+                    view.warningMessage.setText("Please select an image to send!");
+                }
             }
         });
     }
