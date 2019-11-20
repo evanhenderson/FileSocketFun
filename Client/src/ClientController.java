@@ -51,7 +51,6 @@ public class ClientController {
                      String pathToCachedFile = System.getProperty("user.dir") + fileSeparator + "Client"
                              + fileSeparator + "Cache" + fileSeparator;
                      try {
-                         System.out.println(Paths.get(pathToCachedFile));
                          Files.copy(Paths.get(file.getDirectory() + file.getFile()), Paths.get(pathToCachedFile + theFileName),
                                  StandardCopyOption.REPLACE_EXISTING);
                      } catch (IOException e) {
