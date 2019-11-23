@@ -1,5 +1,4 @@
 import java.io.*;
-import java.nio.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +7,7 @@ public class ServerModel {
     //databases need a name
     static final String DATABASE_NAME = "serverdatabase.db";
     //need a connection url (like a command to open a file
-    static final String CONNECTION_URL = "jdbc:sqlite:database\\" + DATABASE_NAME;
+    static final String CONNECTION_URL = "jdbc:sqlite:Server\\database\\"  + DATABASE_NAME;
     static final String TABLE_USERS = "tableUsers";
     static final String ID = "id";
     static final String USERNAME = "username";

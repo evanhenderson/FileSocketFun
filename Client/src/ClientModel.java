@@ -67,11 +67,11 @@ public class ClientModel {
         while((len = in.read(buf)) != -1) {
             out.write(buf, 0, len);
         }
-        out.write(3);
     }
 
     public void sendImageName(String imageName, OutputStream out) throws IOException {
         out.write(Byte.parseByte(imageName));
+        out.write(-1);
     }
 
     public void receiveData(String serverMsg) {
