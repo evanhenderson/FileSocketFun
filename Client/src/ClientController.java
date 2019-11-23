@@ -77,9 +77,10 @@ public class ClientController {
                     view.warningMessage.setText("Please select an image to send!");
                 } else {
                     try {
+                        System.out.println("Send button was hit.");
                         model.sendData(imageName, serverIP);
                     } catch (IOException e) {
-                        view.warningMessage.setText("That was NOT a valid IP address. Please try again!")
+                        view.warningMessage.setText("That was NOT a valid IP address. Please try again!");
                     }
                     view.warningMessage.setText("Sent! Please select another file to send.");
                 }
@@ -99,21 +100,21 @@ class Main {
 
     public static void main(String[] args) {
         ClientController controller = new ClientController(new ClientModel());
-        String ipAddress = controller.view.serverIP.getText();
-        int portNumber = 8080;
-        try{
-            Socket clientSocket = new Socket(ipAddress, portNumber);
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+        //String ipAddress = controller.view.serverIP.getText();
+        //int portNumber = 8080;
+        //try{
+          //  Socket clientSocket = new Socket(ipAddress, portNumber);
+            //PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+       //     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+         //   BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
-            while (true){
-                    String serverResponse = in.readLine();
-                    controller.model.receiveData(serverResponse);
-            }
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+           // while (true){
+             //       String serverResponse = in.readLine();
+               //     controller.model.receiveData(serverResponse);
+            //}
+        //}catch(IOException e){
+          //  e.printStackTrace();
+        //}
         }
     }
 
