@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 public class ServerController {
     ServerModel model;
-    ServerSocket serverSocket = new ServerSocket(8080);
+    ServerSocket serverSocket = new ServerSocket(12345);
     Socket clientSocket = serverSocket.accept();
     ServerController(ServerModel model) throws IOException {
         this.model = model;
@@ -12,9 +12,11 @@ public class ServerController {
         OutputStream out = null;
         InputStream in = null;
         try {
-            out = new FileOutputStream(System.getProperty("user.dir") +
-                    "Server" + System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
-                    + "file.jpg");
+            String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") +
+                    System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
+                    + "file.jpg";
+            System.out.println(filePath);
+            out = new FileOutputStream(filePath);
         }catch(IOException exception){
             exception.printStackTrace();
         }
@@ -23,8 +25,10 @@ public class ServerController {
         }catch(IOException exception){
             exception.printStackTrace();
         }
-        int count;
+        OutputStream out2 = clientSocket.getOutputStream();
+        out2.write(Integer.parseInt("1"));
         model.receiveData(in, out);
+
         in.close();
         out.close();
         clientSocket.close();

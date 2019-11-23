@@ -2,7 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d4dda899-dbb6-4b47-82db-5c8e1427a3a9" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../Server/database/production/Server/FileDataType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/database/production/Server/ServerController$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/database/production/Server/ServerController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/database/production/Server/ServerModel.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/database/production/Server/UserDataType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/files/file.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/database/serverdatabase.db" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/database/serverdatabase.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/ServerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ServerController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/ServerModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/ServerModel.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,8 +24,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectId" id="1TSQGxddv4O0icXjgabjB9g5QVS" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../SQLiteFun" />
   </component>
   <component name="RunDashboard">
@@ -56,5 +68,8 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>
