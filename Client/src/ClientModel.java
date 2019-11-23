@@ -1,11 +1,13 @@
 public class ClientModel {
     ClientController controller;
     public ClientModel(){
-    }
-    public void sendData(){
 
     }
-    public void receiveData(String serverMsg){
+    public void sendData() {
+
+    }
+
+    public void receiveData(String serverMsg) {
     //server protocol codes: 'login', 'imageList', 'download'
         if (serverMsg == "login"){
             controller.setUser();

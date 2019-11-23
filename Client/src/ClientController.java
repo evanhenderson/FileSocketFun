@@ -80,10 +80,10 @@ public class ClientController {
         });
     }
     public void setUser() {
-
+        //sets the user
     }
     public void imageListSet() {
-
+        //when it receives the list back of what to download, it takes that, and puts it into an array for
     }
 
 }

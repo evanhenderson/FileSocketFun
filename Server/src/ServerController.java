@@ -12,9 +12,9 @@ public class ServerController {
         OutputStream out = null;
         InputStream in = null;
         try {
-            out = new FileOutputStream("C:\\Users\\evanh\\OneDrive\\" +
-                    "Documents\\GitHub\\FileSocketFun\\" +
-                    "Server\\files\\file.jpg");
+            out = new FileOutputStream(System.getProperty("user.dir") +
+                    "Server" + System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
+                    + "file.jpg");
         }catch(IOException exception){
             exception.printStackTrace();
         }
