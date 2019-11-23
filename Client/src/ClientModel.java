@@ -7,13 +7,11 @@ public class ClientModel {
     public ClientModel(){
 
     }
-    public void sendData(String imageName, String hostIP) {
-        try {
+    public void sendData(String imageName, String hostIP) throws IOException {
             socket = new Socket(hostIP, 12345);
+            while(true) {
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            }
 
     }
 

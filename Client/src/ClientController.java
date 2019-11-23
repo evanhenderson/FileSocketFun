@@ -76,7 +76,11 @@ public class ClientController {
                 } else if (imageName.equals("Image Preview: ")) {
                     view.warningMessage.setText("Please select an image to send!");
                 } else {
-                    model.sendData(imageName, serverIP);
+                    try {
+                        model.sendData(imageName, serverIP);
+                    } catch (IOException e) {
+                        view.warningMessage.setText("That was NOT a valid IP address. Please try again!")
+                    }
                     view.warningMessage.setText("Sent! Please select another file to send.");
                 }
             }
