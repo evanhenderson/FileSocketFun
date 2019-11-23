@@ -22,7 +22,7 @@ public class ClientController {
     public static void main(String[] args) {
         ClientController controller = new ClientController(new ClientModel());
         String ipAddress = controller.view.serverIP.getText();
-        int portNumber = 8080;
+        int portNumber = 12345;
         try{
             Socket clientSocket = new Socket(ipAddress, portNumber);
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);

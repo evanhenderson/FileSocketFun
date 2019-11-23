@@ -8,10 +8,10 @@ public class ClientModel {
     public void receiveData(String serverMsg){
     //server protocol codes: 'login', 'imageList', 'download'
         if (serverMsg == "login"){
-            ClientController.setUser();
+            controller.setUser();
         }
         if (serverMsg == "imageList"){
-            ClientController.imageListSet();
+            controller.imageListSet();
         }
         if (serverMsg == "download"){
             download();

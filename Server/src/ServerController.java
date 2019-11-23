@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 public class ServerController {
     ServerModel model;
-    ServerSocket serverSocket = new ServerSocket(8080);
+    ServerSocket serverSocket = new ServerSocket(12345);
     Socket clientSocket = serverSocket.accept();
     ServerController(ServerModel model) throws IOException {
         this.model = model;
