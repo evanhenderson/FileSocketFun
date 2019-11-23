@@ -1,9 +1,19 @@
+import java.io.IOException;
+import java.net.Socket;
+
 public class ClientModel {
     ClientController controller;
+    Socket socket;
     public ClientModel(){
 
     }
-    public void sendData() {
+    public void sendData(String imageName, String hostIP) {
+        try {
+            socket = new Socket(hostIP, 12345);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
