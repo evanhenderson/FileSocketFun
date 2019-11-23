@@ -80,7 +80,8 @@ public class ClientController {
                         System.out.println("Send button was hit.");
                         model.sendData(imageName, serverIP);
                     } catch (IOException e) {
-                        view.warningMessage.setText("That was NOT a valid IP address. Please try again!");
+                        view.warningMessage.setText("Something went wrong while sending you image. Please double check" +
+                                " your server's IP address and try again!");
                     }
                     view.warningMessage.setText("Sent! Please select another file to send.");
                 }

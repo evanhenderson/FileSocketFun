@@ -1,3 +1,4 @@
+import java.awt.desktop.OpenURIEvent;
 import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -9,39 +10,56 @@ public class ClientModel {
     FileInputStream fileIn;
     OutputStream out;
     public ClientModel(){
+
+    }
+
+    public void beginConnection(String hostIP) {
         try {
-            socket = new Socket("147.222.236.132", 12345);
+            socket = new Socket(hostIP, 12345);
             stdIn = socket.getInputStream();
             out = socket.getOutputStream();
-            out.write(Byte.parseByte("2"));
-            System.out.println("Successfully connected to the server");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public void sendData(String imageName, String hostIP) throws IOException {
-        System.out.println("Made it to sendData");
+        beginConnection(hostIP);
+
+
         String filePath = System.getProperty("user.dir")+ System.getProperty("file.separator") + "Client"
                 + System.getProperty("file.separator") +
                 "Cache" + System.getProperty("file.separator") + imageName;
-        System.out.println(filePath);
+
         fileIn = new FileInputStream(filePath);
-        byte[] code = new byte[1];
-        System.out.println("Before Reading code");
-        stdIn.read(code);
-        System.out.println("Just read code");
-        int num = Integer.parseInt(String.valueOf(code[0]));
-        System.out.println(num);
-        if(num == 1) {
+
+        int confirmation = ensureConnection(out, stdIn);
+        if(confirmation == 1) {
             System.out.println("THIS WORKED");
+            sendImageName(imageName, out);
             copy(fileIn, out);
         }
-            out.write("closing".getBytes());
-            out.close();
-            stdIn.close();
-            fileIn.close();
-            socket.close();
+        File clearingCache = new File(filePath);
+        closeConnection(out, stdIn, fileIn, clearingCache);
     }
+
+    public int ensureConnection(OutputStream out, InputStream stdIn) throws IOException {
+        out.write(Byte.parseByte("2"));
+        byte[] code = new byte[1];
+        stdIn.read(code);
+        return Integer.parseInt(String.valueOf(code[0]));
+    }
+
+    public void closeConnection(OutputStream out, InputStream stdIn, InputStream fileIn, File clearingCache)
+            throws IOException {
+        out.write("closing".getBytes());
+        out.close();
+        stdIn.close();
+        clearingCache.delete();
+        fileIn.close();
+        socket.close();
+    }
+
 
     public void copy(InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[8192];
@@ -50,6 +68,10 @@ public class ClientModel {
             out.write(buf, 0, len);
         }
         out.write(3);
+    }
+
+    public void sendImageName(String imageName, OutputStream out) throws IOException {
+        out.write(Byte.parseByte(imageName));
     }
 
     public void receiveData(String serverMsg) {
