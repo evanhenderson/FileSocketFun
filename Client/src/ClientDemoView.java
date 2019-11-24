@@ -1,8 +1,13 @@
+/**
+ * Handles the simplified GUI for the Demo. Currently, only has image sending capabilities.
+ *
+ * @author Nora El Naby
+ *
+ * @version 1.0.1
+ */
+
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 public class ClientDemoView extends ClientView {
 
@@ -18,7 +23,7 @@ public class ClientDemoView extends ClientView {
     public ClientDemoView(ClientController controller){
         this.controller = controller;
         setPreferredSize(new Dimension(500, 400));
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setVisible(true);
         setupUI();
         pack();

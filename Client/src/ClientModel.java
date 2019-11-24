@@ -1,7 +1,14 @@
-import java.awt.desktop.OpenURIEvent;
+/**
+ * Handles the sockets + connection for the client end. Currently, can send an image via port 12345 to a user
+ * inputted IP address.
+ *
+ * @authors Nora El Naby & Evan Henderson
+ * @version 1.5
+ */
+
 import java.io.*;
 import java.net.Socket;
-import java.nio.ByteBuffer;
+import java.util.Scanner;
 
 public class ClientModel {
     ClientController controller;
@@ -9,6 +16,7 @@ public class ClientModel {
     InputStream stdIn;
     FileInputStream fileIn;
     OutputStream out;
+    File clearingCache;
     public ClientModel(){
 
     }
@@ -25,8 +33,6 @@ public class ClientModel {
 
     public void sendData(String imageName, String hostIP) throws IOException {
         beginConnection(hostIP);
-
-
         String filePath = System.getProperty("user.dir")+ System.getProperty("file.separator") + "Client"
                 + System.getProperty("file.separator") +
                 "Cache" + System.getProperty("file.separator") + imageName;
@@ -37,41 +43,55 @@ public class ClientModel {
         if(confirmation == 1) {
             System.out.println("THIS WORKED");
             sendImageName(imageName, out);
-            copy(fileIn, out);
+            System.out.println("Done sending file name");
+            sendImage(fileIn, out);
         }
-        File clearingCache = new File(filePath);
-        closeConnection(out, stdIn, fileIn, clearingCache);
+        clearingCache = new File(filePath);
+        closeConnection(out, stdIn, fileIn);
     }
 
     public int ensureConnection(OutputStream out, InputStream stdIn) throws IOException {
-        out.write(Byte.parseByte("2"));
         byte[] code = new byte[1];
         stdIn.read(code);
         return Integer.parseInt(String.valueOf(code[0]));
     }
 
-    public void closeConnection(OutputStream out, InputStream stdIn, InputStream fileIn, File clearingCache)
+    public void closeConnection(OutputStream out, InputStream stdIn, InputStream fileIn)
             throws IOException {
         out.write("closing".getBytes());
+        clearingCache.deleteOnExit();
         out.close();
         stdIn.close();
-        clearingCache.delete();
         fileIn.close();
         socket.close();
     }
 
-
-    public void copy(InputStream in, OutputStream out) throws IOException {
+    public void sendImage(InputStream in, OutputStream out) throws IOException {
+        System.out.println("Starting to send the image");
+        out.write(2);
         byte[] buf = new byte[8192];
         int len = 0;
         while((len = in.read(buf)) != -1) {
             out.write(buf, 0, len);
         }
+        System.out.println("Finished sending the image");
     }
 
     public void sendImageName(String imageName, OutputStream out) throws IOException {
-        out.write(Byte.parseByte(imageName));
+        out.write(1);
+        byte[] buf = new byte[1];
+        int len = 0;
+        OutputStream imageNameOut = new FileOutputStream(System.getProperty("user.dir") + controller.fileSeparator +
+                "Client" + controller.fileSeparator + "Cache" + controller.fileSeparator + "imageName");
+        imageNameOut.write(imageName.getBytes());
+        imageNameOut.close();
+        InputStream in = new FileInputStream(System.getProperty("user.dir") + controller.fileSeparator +
+                "Client" + controller.fileSeparator + "Cache" + controller.fileSeparator + "imageName");
+        while((len = in.read(buf)) != -1) {
+            out.write(buf, 0, len);
+        }
         out.write(-1);
+        in.close();
     }
 
     public void receiveData(String serverMsg) {

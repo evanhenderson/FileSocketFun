@@ -1,9 +1,17 @@
+/**
+ * Serves as the middle ground between the ClientView (GUI) and the ClientModel (Socket)
+ *
+ * @author Nora El Naby
+ * @version 1.0.3
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.*;
-import java.net.Socket;
 import java.nio.file.*;
 
 public class ClientController {
@@ -71,6 +79,8 @@ public class ClientController {
             public void actionPerformed(ActionEvent actionEvent) {
                 serverIP = view.serverIP.getText();
                 imageName = view.imageName.getText();
+                model.clearingCache = new File(System.getProperty("user.dir") + fileSeparator + "Client" +
+                        fileSeparator + "Cache" + imageName);
                 if(serverIP.equals("")) {
                     view.warningMessage.setText("Please enter a valid server IP!");
                 } else if (imageName.equals("Image Preview: ")) {
@@ -87,6 +97,47 @@ public class ClientController {
                 }
             }
         });
+
+        view.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent windowEvent) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                try {
+                    view.dispose();
+                    model.closeConnection(model.out, model.stdIn, model.fileIn);
+                }catch(Exception e) {
+
+                }
+            }
+
+            @Override
+            public void windowClosed(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent windowEvent) {
+
+            }
+        });
     }
     public void setUser() {
         //sets the user
@@ -101,21 +152,6 @@ class Main {
 
     public static void main(String[] args) {
         ClientController controller = new ClientController(new ClientModel());
-        //String ipAddress = controller.view.serverIP.getText();
-        //int portNumber = 8080;
-        //try{
-          //  Socket clientSocket = new Socket(ipAddress, portNumber);
-            //PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-       //     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-         //   BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-
-           // while (true){
-             //       String serverResponse = in.readLine();
-               //     controller.model.receiveData(serverResponse);
-            //}
-        //}catch(IOException e){
-          //  e.printStackTrace();
-        //}
         }
     }
 
