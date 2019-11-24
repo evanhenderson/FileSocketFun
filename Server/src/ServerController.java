@@ -12,7 +12,15 @@ public class ServerController {
     public void start() throws IOException {
         OutputStream out = null;
         InputStream in = null;
-
+        try {
+            String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") +
+                    System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
+                    + "file.jpg";
+            System.out.println(filePath);
+            out = new FileOutputStream(filePath);
+        }catch(IOException exception){
+            exception.printStackTrace();
+        }
         try {
             in = clientSocket.getInputStream();
         }catch(IOException exception){
@@ -23,9 +31,10 @@ public class ServerController {
         OutputStream fileNameOut = new FileOutputStream(System.getProperty("user.dir") + System.getProperty("file.separator") +
                 System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
                 + "fileName.txt");
-        model.receiveData(in, fileNameOut);
+        model.receiveData(in, out, fileNameOut);
 
         in.close();
+        out.close();
         clientSocket.close();
     }
     public static void main(String[] args) throws IOException {

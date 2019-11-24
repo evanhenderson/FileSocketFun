@@ -8,7 +8,7 @@ public class ServerModel {
     //databases need a name
     static final String DATABASE_NAME = "serverdatabase.db";
     //need a connection url (like a command to open a file
-    static final String CONNECTION_URL = "jdbc:sqlite:Server\\database\\"  + DATABASE_NAME;
+    static final String CONNECTION_URL = "jdbc:sqlite:database\\"  + DATABASE_NAME;
     static final String TABLE_USERS = "tableUsers";
     static final String ID = "id";
     static final String USERNAME = "username";
@@ -185,24 +185,18 @@ public class ServerModel {
     public void sendData(String Msg, BufferedReader in, PrintWriter out){
         out.println(Msg);
     }
-    public void receiveData(InputStream in, OutputStream fileNameOut) throws IOException {
+    public void receiveData(InputStream in, OutputStream out, OutputStream fileNameOut) throws IOException {
         byte[] bytes = new byte[8192];
         String fileName = null;
         int count;
         byte[] code = new byte[1];
         int num = readCode(in, code);
         if(num == 1){
-            fileName = readFileName(in, fileNameOut);
+            readFileName(in, fileNameOut);
         }
         readCode(in, code);
         if(num == 2) {
-            String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") +
-                    System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
-                    + fileName;
-            System.out.println(filePath);
-            OutputStream out = new FileOutputStream(filePath);
             readFile(in, out, bytes);
-            out.close();
         }
 
 
@@ -214,7 +208,7 @@ public class ServerModel {
         System.out.println(num);
         return num;
     }
-    public String readFileName(InputStream in, OutputStream fileNameOut)throws IOException{
+    public void readFileName(InputStream in, OutputStream fileNameOut)throws IOException{
         int count;
         String fileName = null;
         byte[] nameBytes = new byte[1];
@@ -233,10 +227,6 @@ public class ServerModel {
         }
         FileDataType newFile = new FileDataType(fileName);
         insertFile(newFile);
-        File receivedFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") +
-                System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
-                + fileName);
-        return fileName;
     }
     public void readFile(InputStream in, OutputStream out, byte[] bytes)throws IOException{
         int count;
