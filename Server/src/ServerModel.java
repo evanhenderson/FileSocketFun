@@ -185,22 +185,28 @@ public class ServerModel {
     public void sendData(String Msg, BufferedReader in, PrintWriter out){
         out.println(Msg);
     }
-    public void receiveData(InputStream in, OutputStream out, OutputStream fileNameOut) throws IOException {
+    public void receiveData(InputStream in, OutputStream fileNameOut) throws IOException {
         byte[] bytes = new byte[8192];
         String fileName = null;
+        OutputStream out = null;
         int count;
         byte[] code = new byte[1];
         int num = readCode(in, code);
         if(num == 1){
-            readFileName(in, fileNameOut);
+            fileName = readFileName(in, fileNameOut);
         }
-        readCode(in, code);
+        num = readCode(in, code);
         if(num == 2) {
+
+            String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") +
+                    "files" + System.getProperty("file.separator")
+                    + fileName;
+            System.out.println(filePath);
+            out = new FileOutputStream(filePath);
+            System.out.println("calls readFile");
             readFile(in, out, bytes);
         }
-
-
-
+        out.close();
     }
     public int readCode(InputStream in, byte[] code)throws IOException{
         in.read(code);
@@ -208,25 +214,34 @@ public class ServerModel {
         System.out.println(num);
         return num;
     }
-    public void readFileName(InputStream in, OutputStream fileNameOut)throws IOException{
+    public String readFileName(InputStream in, OutputStream fileNameOut)throws IOException{
         int count;
         String fileName = null;
         byte[] nameBytes = new byte[1];
         while ((count = in.read(nameBytes)) != -1){
-            if(Integer.parseInt(String.valueOf(nameBytes[count])) == -1){
+            if(Integer.parseInt(String.valueOf(nameBytes[0])) == -1){
                 break;
             }
+            System.out.println("name_loop");
             fileNameOut.write(nameBytes, 0, count);
         }
         fileNameOut.close();
-        Scanner readName = new Scanner(System.getProperty("user.dir") + System.getProperty("file.separator") +
-                System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
+        File readName = new File(System.getProperty("user.dir") + System.getProperty("file.separator") +
+                 "files" + System.getProperty("file.separator")
                 + "fileName.txt");
-        while(readName.hasNext()){
-            fileName = readName.nextLine();
+        Scanner sc = new Scanner(readName);
+
+        while(sc.hasNext()){
+            fileName = sc.nextLine();
+            System.out.println(fileName);
         }
+        sc.close();
         FileDataType newFile = new FileDataType(fileName);
         insertFile(newFile);
+        File receivedFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") +
+                    "files" + System.getProperty("file.separator")
+                    + fileName);
+        return fileName;
     }
     public void readFile(InputStream in, OutputStream out, byte[] bytes)throws IOException{
         int count;
