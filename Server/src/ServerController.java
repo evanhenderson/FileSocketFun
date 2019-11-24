@@ -1,3 +1,4 @@
+import java.awt.desktop.OpenURIEvent;
 import java.net.*;
 import java.io.*;
 public class ServerController {
@@ -27,7 +28,10 @@ public class ServerController {
         }
         OutputStream out2 = clientSocket.getOutputStream();
         out2.write(Integer.parseInt("1"));
-        model.receiveData(in, out);
+        OutputStream fileNameOut = new FileOutputStream(System.getProperty("user.dir") + System.getProperty("file.separator") +
+                System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
+                + "fileName.txt")
+        model.receiveData(in, out, fileNameOut);
 
         in.close();
         out.close();

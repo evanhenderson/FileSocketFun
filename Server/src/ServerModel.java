@@ -185,20 +185,36 @@ public class ServerModel {
     public void sendData(String Msg, BufferedReader in, PrintWriter out){
         out.println(Msg);
     }
-    public void receiveData(InputStream in, OutputStream out) throws IOException {
+    public void receiveData(InputStream in, OutputStream out, OutputStream fileNameOut) throws IOException {
         byte[] bytes = new byte[8192];
         int count;
         byte[] code = new byte[1];
+        int num = readCode(in, code);
+        if(num == 2) {
+            readFile(in, out, bytes);
+        }
+        if(num == 1){
+            readFileName(in, fileNameOut);
+        }
+
+    }
+    public int readCode(InputStream in, byte[] code)throws IOException{
         in.read(code);
         int num = Integer.parseInt(String.valueOf(code[0]));
         System.out.println(num);
-        if(num == 2) {
-            while ((count = in.read(bytes)) != -1) {
-                out.write(bytes, 0, count);
-                System.out.println("while loop");
-            }
-        }
+        return num;
+    }
+    public String readFileName(InputStream in, OutputStream fileNameOut){
+        int count;
 
+
+    }
+    public void readFile(InputStream in, OutputStream out, byte[] bytes)throws IOException{
+        int count;
+        while ((count = in.read(bytes)) != -1) {
+            out.write(bytes, 0, count);
+            System.out.println("while loop");
+        }
     }
     public boolean authenticate(String username, String password){
         return false;
