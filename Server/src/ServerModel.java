@@ -2,6 +2,7 @@ import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class ServerModel {
     //databases need a name
@@ -67,7 +68,7 @@ public class ServerModel {
         // imagePath TEXT)
         String sqlCreate = "CREATE TABLE " + TABLE_FILES + "(" +
                 ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + TITLE +
-                " TEXT," + PATH + ")";
+                " TEXT)";
         System.out.println(sqlCreate);
         //primary key uniquely identifies records
         // autoincrement means let sqlite assign unique ids
@@ -84,8 +85,7 @@ public class ServerModel {
     public void insertFile(FileDataType file){
 
         String sqlInsert = "INSERT INTO " + TABLE_FILES + " VALUES(null, '" +
-                file.getTitle() + "', '" +
-                file.getPath() + "')";
+                file.getTitle() + "')";
         System.out.println(sqlInsert);
         if (connection != null){
             try{
@@ -185,17 +185,27 @@ public class ServerModel {
     public void sendData(String Msg, BufferedReader in, PrintWriter out){
         out.println(Msg);
     }
-    public void receiveData(InputStream in, OutputStream out, OutputStream fileNameOut) throws IOException {
+    public void receiveData(InputStream in, OutputStream fileNameOut) throws IOException {
         byte[] bytes = new byte[8192];
+        String fileName = null;
         int count;
         byte[] code = new byte[1];
         int num = readCode(in, code);
-        if(num == 2) {
-            readFile(in, out, bytes);
-        }
         if(num == 1){
-            readFileName(in, fileNameOut);
+            fileName = readFileName(in, fileNameOut);
         }
+        readCode(in, code);
+        if(num == 2) {
+            String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") +
+                    System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
+                    + fileName;
+            System.out.println(filePath);
+            OutputStream out = new FileOutputStream(filePath);
+            readFile(in, out, bytes);
+            out.close();
+        }
+
+
 
     }
     public int readCode(InputStream in, byte[] code)throws IOException{
@@ -204,10 +214,29 @@ public class ServerModel {
         System.out.println(num);
         return num;
     }
-    public String readFileName(InputStream in, OutputStream fileNameOut){
+    public String readFileName(InputStream in, OutputStream fileNameOut)throws IOException{
         int count;
-
-
+        String fileName = null;
+        byte[] nameBytes = new byte[1];
+        while ((count = in.read(nameBytes)) != -1){
+            if(Integer.parseInt(String.valueOf(nameBytes[count])) == -1){
+                break;
+            }
+            fileNameOut.write(nameBytes, 0, count);
+        }
+        fileNameOut.close();
+        Scanner readName = new Scanner(System.getProperty("user.dir") + System.getProperty("file.separator") +
+                System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
+                + "fileName.txt");
+        while(readName.hasNext()){
+            fileName = readName.nextLine();
+        }
+        FileDataType newFile = new FileDataType(fileName);
+        insertFile(newFile);
+        File receivedFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") +
+                System.getProperty("file.separator") + "files" + System.getProperty("file.separator")
+                + fileName);
+        return fileName;
     }
     public void readFile(InputStream in, OutputStream out, byte[] bytes)throws IOException{
         int count;
