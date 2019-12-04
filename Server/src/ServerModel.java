@@ -45,7 +45,7 @@ public class ServerModel {
         String sqlCreate = "CREATE TABLE " + TABLE_USERS + "(" +
                 ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + USERNAME +
                 " TEXT," + PASSWORD + " TEXT)";
-        System.out.println(sqlCreate);
+
         //primary key uniquely identifies records
         // autoincrement means let sqlite assign unique ids
         // start at 1 and go up by 1
@@ -54,7 +54,7 @@ public class ServerModel {
                 Statement statement = connection.createStatement();
                 statement.execute(sqlCreate);
             }catch(SQLException e){
-                e.printStackTrace();
+
             }
         }
     }
@@ -69,7 +69,7 @@ public class ServerModel {
         String sqlCreate = "CREATE TABLE " + TABLE_FILES + "(" +
                 ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + TITLE +
                 " TEXT)";
-        System.out.println(sqlCreate);
+
         //primary key uniquely identifies records
         // autoincrement means let sqlite assign unique ids
         // start at 1 and go up by 1
@@ -78,7 +78,7 @@ public class ServerModel {
                 Statement statement = connection.createStatement();
                 statement.execute(sqlCreate);
             }catch(SQLException e){
-                e.printStackTrace();
+
             }
         }
     }
@@ -182,10 +182,11 @@ public class ServerModel {
 
 
 
-    public void sendData(String Msg, BufferedReader in, PrintWriter out){
-        out.println(Msg);
+    public void sendFileName(String Msg, OutputStream out) throws IOException {
+        out.write(Msg.getBytes());
     }
     public void receiveData(InputStream in, OutputStream fileNameOut) throws IOException {
+        ServerController serverController = new ServerController(this);
         byte[] bytes = new byte[8192];
         String fileName = null;
         OutputStream out = null;
@@ -206,6 +207,24 @@ public class ServerModel {
             System.out.println("calls readFile");
             readFile(in, out, bytes);
         }
+        if(num == 3){
+            List<FileDataType> filesList = getAllFilesList();
+            FileDataType file;
+            out = serverController.clientSocket.getOutputStream();
+            for(int i = 0; i < filesList.size(); i++){
+                file = filesList.get(i);
+                sendFileName(file.getTitle(), out);
+            }
+            String endChar = "*";
+            out.write(endChar.getBytes());
+        }
+        if(num == 5){
+            serverController.start();
+        }
+        if(num == -1){
+            in.close();
+            serverController.closeClientSocket();
+        }
         out.close();
     }
     public int readCode(InputStream in, byte[] code)throws IOException{
@@ -222,7 +241,7 @@ public class ServerModel {
             if(Integer.parseInt(String.valueOf(nameBytes[0])) == -1){
                 break;
             }
-            System.out.println("name_loop");
+
             fileNameOut.write(nameBytes, 0, count);
         }
         fileNameOut.close();
@@ -233,7 +252,7 @@ public class ServerModel {
 
         while(sc.hasNext()){
             fileName = sc.nextLine();
-            System.out.println(fileName);
+
         }
         sc.close();
         FileDataType newFile = new FileDataType(fileName);
@@ -247,7 +266,7 @@ public class ServerModel {
         int count;
         while ((count = in.read(bytes)) != -1) {
             out.write(bytes, 0, count);
-            System.out.println("while loop");
+
         }
     }
     public boolean authenticate(String username, String password){
