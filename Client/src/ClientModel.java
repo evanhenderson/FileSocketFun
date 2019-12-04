@@ -8,6 +8,8 @@
 
 import java.io.*;
 import java.net.Socket;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ClientModel {
@@ -15,8 +17,11 @@ public class ClientModel {
     Socket socket;
     InputStream stdIn;
     FileInputStream fileIn;
+    FileOutputStream fileOut;
     OutputStream out;
     File clearingCache;
+    ArrayList<String> availableFiles;
+
     public ClientModel(){
 
     }
@@ -41,9 +46,7 @@ public class ClientModel {
 
         int confirmation = ensureConnection(out, stdIn);
         if(confirmation == 1) {
-            System.out.println("THIS WORKED");
             sendImageName(imageName, out);
-            System.out.println("Done sending file name");
             sendImage(fileIn, out);
         }
         clearingCache = new File(filePath);
@@ -67,14 +70,12 @@ public class ClientModel {
     }
 
     public void sendImage(InputStream in, OutputStream out) throws IOException {
-        System.out.println("Starting to send the image");
         out.write(2);
         byte[] buf = new byte[8192];
         int len = 0;
         while((len = in.read(buf)) != -1) {
             out.write(buf, 0, len);
         }
-        System.out.println("Finished sending the image");
     }
 
     public void sendImageName(String imageName, OutputStream out) throws IOException {
@@ -94,23 +95,40 @@ public class ClientModel {
         in.close();
     }
 
-    public void receiveData(String serverMsg) {
-    //server protocol codes: 'login', 'imageList', 'download'
-        if (serverMsg == "login"){
-            controller.setUser();
-        }
-        if (serverMsg == "imageList"){
-            controller.imageListSet();
-        }
-        if (serverMsg == "download"){
-            download();
-        }
+    public void requestFileNames(String hostIP) throws IOException {
+        beginConnection(hostIP);
+        out.write(3);
+        receiveFileNames();
     }
-    public void download(){
 
+    public void requestFile(String fileName) throws IOException {
+        out.write(fileName.getBytes());
+        download(fileName);
+    }
+
+    public void download(String fileName) throws FileNotFoundException {
+        String pathToFile = System.getProperty("user.dir") + controller.fileSeparator + "Client" +
+                controller.fileSeparator + "Cache" + controller.fileSeparator + fileName;
+        File newFile = new File (pathToFile);
+        fileOut = new FileOutputStream(pathToFile);
+    }
+
+   public void receiveFileNames() throws IOException {
+        String next = stdIn.readAllBytes().toString();
+        while(!next.equals("*")) {
+            availableFiles.add(next);
+            next = stdIn.readAllBytes().toString();
+        }
     }
 
     public void setController(ClientController controller) {
         this.controller = controller;
+    }
+
+    public void closeConnection() throws IOException {
+        out.write(-1);
+    }
+    public void resetConnection() throws IOException {
+        out.write(5);
     }
 }

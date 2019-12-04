@@ -24,12 +24,16 @@ public class ClientDemoView extends ClientView {
         this.controller = controller;
         setPreferredSize(new Dimension(500, 400));
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        setVisible(true);
-        setupUI();
+        int sendOrReceive = JOptionPane.showOptionDialog(null, "Welcome to FileSocketFun! " +
+                "Would you like to send or receive a file?", "Send or Receive", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, );
+        setupSendUI();
         pack();
     }
 
-    private void setupUI() {
+    private void setupSendUI() {
+        setVisible(true);
+
         serverIP = new JTextField("");
         serverIP.setPreferredSize(new Dimension(300, 30));
         fileSearch = new JButton("Find Image");
@@ -77,12 +81,9 @@ public class ClientDemoView extends ClientView {
         getContentPane().add(welcomeLabel, BorderLayout.NORTH);
         getContentPane().add(center, BorderLayout.CENTER);
 
+    }
 
-
-
-
-
-
+    public void setupReceiveUI() {
 
     }
 }
