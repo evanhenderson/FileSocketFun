@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.*;
 import java.nio.file.*;
+import java.util.ArrayList;
 
 public class ClientController {
 
@@ -94,10 +95,10 @@ public class ClientController {
                                 " your server's IP address and try again!");
                     }
                     view.warningMessage.setText("Sent! Please select another file to send.");
+                    view.fileSentPopup();
                 }
             }
         });
-
         view.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent windowEvent) {
@@ -138,12 +139,27 @@ public class ClientController {
 
             }
         });
+        view.receiveFile.addActionListener( new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    model.requestFile(view.imageOptions.getSelectedValue());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
     public void setUser() {
         //sets the user
     }
     public void imageListSet() {
         //when it receives the list back of what to download, it takes that, and puts it into an array for
+    }
+
+    public ArrayList<String> getImageList() {
+        model.requestFileNames(view.serverIP.getText());
+        return model.availableFiles;
     }
 
 }

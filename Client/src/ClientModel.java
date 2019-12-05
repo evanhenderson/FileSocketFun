@@ -8,9 +8,7 @@
 
 import java.io.*;
 import java.net.Socket;
-
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class ClientModel {
     ClientController controller;
@@ -95,10 +93,14 @@ public class ClientModel {
         in.close();
     }
 
-    public void requestFileNames(String hostIP) throws IOException {
-        beginConnection(hostIP);
-        out.write(3);
-        receiveFileNames();
+    public void requestFileNames(String hostIP) {
+        try {
+            beginConnection(hostIP);
+            out.write(3);
+            receiveFileNames();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void requestFile(String fileName) throws IOException {
@@ -111,6 +113,7 @@ public class ClientModel {
                 controller.fileSeparator + "Cache" + controller.fileSeparator + fileName;
         File newFile = new File (pathToFile);
         fileOut = new FileOutputStream(pathToFile);
+
     }
 
    public void receiveFileNames() throws IOException {
