@@ -80,7 +80,7 @@ public class ClientController {
             public void actionPerformed(ActionEvent actionEvent) {
                 serverIP = view.serverIP.getText();
                 imageName = view.imageName.getText();
-                model.clearingCache = new File(System.getProperty("user.dir") + fileSeparator + "Client" +
+                model.cachedVersion = new File(System.getProperty("user.dir") + fileSeparator + "Client" +
                         fileSeparator + "Cache" + imageName);
                 if(serverIP.equals("")) {
                     view.warningMessage.setText("Please enter a valid server IP!");
@@ -108,7 +108,7 @@ public class ClientController {
             public void windowClosing(WindowEvent windowEvent) {
                 try {
                     view.dispose();
-                    model.closeConnection(model.out, model.stdIn, model.fileIn);
+                    model.closeConnection();
                 }catch(Exception e) {
 
                 }
