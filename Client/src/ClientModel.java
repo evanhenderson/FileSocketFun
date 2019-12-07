@@ -15,7 +15,7 @@ public class ClientModel {
     Socket socket;
     InputStream stdIn;
     FileInputStream fileIn;
-    FileOutputStream fileOut;
+    FileWriter fileOut;
     OutputStream out;
     File clearingCache;
     ArrayList<String> availableFiles;
@@ -106,14 +106,27 @@ public class ClientModel {
     public void requestFile(String fileName) throws IOException {
         out.write(fileName.getBytes());
         download(fileName);
+        controller.promptToContinue();
     }
 
-    public void download(String fileName) throws FileNotFoundException {
-        String pathToFile = System.getProperty("user.dir") + controller.fileSeparator + "Client" +
-                controller.fileSeparator + "Cache" + controller.fileSeparator + fileName;
-        File newFile = new File (pathToFile);
-        fileOut = new FileOutputStream(pathToFile);
+    public void download(String fileName) {
+        String path = controller.chooseFileSaveLocation();
+        if(path == "BIG ERROR") {
+            controller.askTheUserWhy();
+        } else {
+            try {
+                fileOut = new FileWriter(path);
+                String next = stdIn.readAllBytes().toString();
+                while(!next.equals(null)) {
+                    fileOut.write(next);
+                    next = stdIn.readAllBytes().toString();
+                }
+                fileOut.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+        }
     }
 
    public void receiveFileNames() throws IOException {
@@ -134,4 +147,5 @@ public class ClientModel {
     public void resetConnection() throws IOException {
         out.write(5);
     }
+
 }
