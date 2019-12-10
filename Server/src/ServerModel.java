@@ -195,6 +195,7 @@ public class ServerModel {
         int num = readCode(in, code);
         while(num != -1){
         if(num == 1){
+            System.out.println("read file name");
             fileName = readFileName(in, fileNameOut);
         }
         num = readCode(in, code);
@@ -223,12 +224,11 @@ public class ServerModel {
          //continue condition
         }
         if(num == -1){
-            break;
+           break;
         }
         }
         out.close();
         in.close();
-        serverController.closeClientSocket();
     }
     public int readCode(InputStream in, byte[] code)throws IOException{
         in.read(code);
@@ -237,6 +237,7 @@ public class ServerModel {
         return num;
     }
     public String readFileName(InputStream in, OutputStream fileNameOut)throws IOException{
+        System.out.println("read file name");
         int count;
         String fileName = null;
         byte[] nameBytes = new byte[1];
