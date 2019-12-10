@@ -3,12 +3,13 @@
  * inputted IP address.
  *
  * @authors Nora El Naby & Evan Henderson
- * @version 1.7
+ * @version 1.7.1
  */
 
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class ClientModel {
 
@@ -134,9 +135,11 @@ public class ClientModel {
         out.write(2);
         byte[] buf = new byte[8192];
         int len = 0;
-        while((len = stdIn.read(buf)) != -1) {
+        while((len = fileIn.read(buf)) != -1) {
+            System.out.println("sending parcel");
             out.write(buf, 0, len);
         }
+        System.out.println("sent");
     }
 
     /**
@@ -167,9 +170,11 @@ public class ClientModel {
      * @param hostIP the IP address of the host
      */
     public void requestFileNames(String hostIP) {
+        availableFiles = new ArrayList<>();
         try {
             beginConnection(hostIP);
             out.write(3);
+            System.out.println("Receiving file names");
             receiveFileNames();
         } catch (IOException e) {
             e.printStackTrace();
@@ -182,6 +187,8 @@ public class ClientModel {
      * @throws IOException
      */
     public void requestFile(String fileName) throws IOException {
+        System.out.println("Requesting the file");
+        out.write(4);
         out.write(fileName.getBytes());
         download();
         controller.promptToContinue();
@@ -191,6 +198,7 @@ public class ClientModel {
      * Downloads a given file from the server
      */
     public void download() {
+        System.out.println("Downloading the file");
         String path = controller.chooseFileSaveLocation();
         if(path == "BIG ERROR") {
             controller.askTheUserWhy();
@@ -215,11 +223,37 @@ public class ClientModel {
      * @throws IOException if stIn hasn't been initialized yet
      */
     public void receiveFileNames() throws IOException {
-        String next = stdIn.readAllBytes().toString();
-        while(!next.equals("*")) {
-            availableFiles.add(next);
-            next = stdIn.readAllBytes().toString();
+        System.out.println("reading file names");
+        FileOutputStream availableFileNames = new FileOutputStream(System.getProperty("user.dir") + controller.fileSeparator +
+                "Client" + controller.fileSeparator + "Cache" + controller.fileSeparator + "availableFiles.txt");
+        int buf = 1;
+         byte[] next = stdIn.readNBytes(buf);
+         next = stdIn.readNBytes(buf);
+         while(!"*".equals(new String (next))) {
+             if (next != "%".getBytes()) {
+                 availableFileNames.write(next);
+             }
+             next = stdIn.readNBytes(buf);
+         }
+        System.out.println("Starting to read into available Files");
+        availableFileNames.close();
+        Scanner availableIn = new Scanner(new File(System.getProperty("user.dir") + controller.fileSeparator +
+                "Client" + controller.fileSeparator + "Cache" + controller.fileSeparator + "availableFiles.txt"));
+        while(availableIn.hasNext()) {
+            String available = availableIn.nextLine();
+            System.out.println(available);
+            String fileName = "";
+            for(int i = 0; i < available.length(); i++) {
+                if(available.charAt(i) == '%') {
+                    availableFiles.add(fileName);
+                    fileName = "";
+                } else {
+                    fileName += available.charAt(i);
+                }
+            }
         }
+        System.out.println(availableFiles);
+        System.out.println("Done");
     }
 
     /**

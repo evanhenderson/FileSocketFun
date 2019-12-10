@@ -150,8 +150,8 @@ public class ClientController {
         });
     }
 
-    public ArrayList<String> getImageList() {
-        model.requestFileNames(view.serverIP.getText());
+    public ArrayList<String> getImageList(String hostIP) {
+        model.requestFileNames(hostIP);
         return model.availableFiles;
     }
 
@@ -164,7 +164,7 @@ public class ClientController {
     }
 
     public void promptToContinue() {
-        view.promptToContinue();
+        view.fileSentPopup();
     }
 
     public void continueSending() {

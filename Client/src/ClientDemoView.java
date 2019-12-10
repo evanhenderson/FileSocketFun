@@ -40,8 +40,11 @@ public class ClientDemoView extends ClientView {
         } else if(sendOrReceive == JOptionPane.NO_OPTION){
             String hostIP = JOptionPane.showInputDialog("What's the IP of your server?");
             if(hostIP != null) {
-                serverIP.setText(hostIP);
-                imageList = controller.getImageList();
+                imageList = controller.getImageList(hostIP);
+                listOptions = new String[imageList.size()];
+                for(int i = 0; i < imageList.size(); i++) {
+                    listOptions[i] = imageList.get(i);
+                }
                 setupReceiveUI();
             }
         } else {
@@ -103,7 +106,7 @@ public class ClientDemoView extends ClientView {
     }
 
     public void setupReceiveUI() {
-        imageOptions = new JList<>(imageList.toArray(listOptions));
+        imageOptions = new JList<>(listOptions);
         JScrollPane listScroller = new JScrollPane(imageOptions);
         receiveFile = new JButton("Receive File");
 
@@ -115,6 +118,7 @@ public class ClientDemoView extends ClientView {
 
         getContentPane().add(list, BorderLayout.CENTER);
         getContentPane().add(submitButton, BorderLayout.SOUTH);
+        setVisible(true);
     }
 
     public String saveFile() {
@@ -127,7 +131,7 @@ public class ClientDemoView extends ClientView {
     }
 
     public void fileSentPopup() {
-        int option = JOptionPane.showConfirmDialog(null, "Your file has been sent. Would you" +
+        int option = JOptionPane.showConfirmDialog(null, "Your file has been sent. Would you " +
                 "like to send another?");
         if(option == JOptionPane.YES_OPTION) {
             setVisible(false);
@@ -143,15 +147,4 @@ public class ClientDemoView extends ClientView {
                 " Please close the window and try again. \n Error Code: NOSAVELOCATION");
     }
 
-    public void promptToContinue() {
-        int continueSending = JOptionPane.showConfirmDialog(null, "Would you like to continue?" +
-                "\n Note: This will send you back to the beginning of the program");
-        if(continueSending == JOptionPane.YES_OPTION) {
-            controller.continueSending();
-            dispose();
-        } else {
-            controller.stopSending();
-            dispose();
-        }
-    }
 }
