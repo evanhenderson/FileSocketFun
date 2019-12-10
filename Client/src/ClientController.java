@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.*;
 import java.nio.file.*;
+import java.util.ArrayList;
 
 public class ClientController {
 
@@ -79,7 +80,7 @@ public class ClientController {
             public void actionPerformed(ActionEvent actionEvent) {
                 serverIP = view.serverIP.getText();
                 imageName = view.imageName.getText();
-                model.clearingCache = new File(System.getProperty("user.dir") + fileSeparator + "Client" +
+                model.cachedVersion = new File(System.getProperty("user.dir") + fileSeparator + "Client" +
                         fileSeparator + "Cache" + imageName);
                 if(serverIP.equals("")) {
                     view.warningMessage.setText("Please enter a valid server IP!");
@@ -94,10 +95,10 @@ public class ClientController {
                                 " your server's IP address and try again!");
                     }
                     view.warningMessage.setText("Sent! Please select another file to send.");
+                    view.fileSentPopup();
                 }
             }
         });
-
         view.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent windowEvent) {
@@ -107,7 +108,7 @@ public class ClientController {
             public void windowClosing(WindowEvent windowEvent) {
                 try {
                     view.dispose();
-                    model.closeConnection(model.out, model.stdIn, model.fileIn);
+                    model.closeConnection();
                 }catch(Exception e) {
 
                 }
@@ -138,12 +139,48 @@ public class ClientController {
 
             }
         });
+        view.receiveFile.addActionListener( new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    model.requestFile(view.imageOptions.getSelectedValue());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
-    public void setUser() {
-        //sets the user
+
+    public ArrayList<String> getImageList() {
+        model.requestFileNames(view.serverIP.getText());
+        return model.availableFiles;
     }
-    public void imageListSet() {
-        //when it receives the list back of what to download, it takes that, and puts it into an array for
+
+    public String chooseFileSaveLocation() {
+        return view.saveFile();
+    }
+
+    public void askTheUserWhy() {
+        view.errorMessage();
+    }
+
+    public void promptToContinue() {
+        view.promptToContinue();
+    }
+
+    public void continueSending() {
+        try {
+            model.closeConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stopSending() {
+        try {
+            model.resetConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -8,6 +8,7 @@
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ClientDemoView extends ClientView {
 
@@ -19,15 +20,28 @@ public class ClientDemoView extends ClientView {
     protected JLabel welcomeLabel;
     protected JLabel imagePreview;
     protected JLabel warningMessage;
+    private ArrayList<String> imageList;
+    protected JList<String> imageOptions;
+    protected String[] listOptions;
+    protected JButton receiveFile;
 
     public ClientDemoView(ClientController controller){
         this.controller = controller;
         setPreferredSize(new Dimension(500, 400));
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        Object[] options = {"Send Files", "Receive Files"};
         int sendOrReceive = JOptionPane.showOptionDialog(null, "Welcome to FileSocketFun! " +
                 "Would you like to send or receive a file?", "Send or Receive", JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE, );
-        setupSendUI();
+                JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        if(sendOrReceive == JOptionPane.YES_OPTION) {
+            setupSendUI();
+        } else {
+            String hostIP = JOptionPane.showInputDialog("What's the IP of your server?");
+            serverIP.setText(hostIP);
+            imageList = controller.getImageList();
+            setupReceiveUI();
+        }
         pack();
     }
 
@@ -84,6 +98,55 @@ public class ClientDemoView extends ClientView {
     }
 
     public void setupReceiveUI() {
+        imageOptions = new JList<>(imageList.toArray(listOptions));
+        JScrollPane listScroller = new JScrollPane(imageOptions);
+        receiveFile = new JButton("Receive File");
 
+        JPanel submitButton = new JPanel();
+        JPanel list = new JPanel();
+
+        submitButton.add(receiveFile);
+        list.add(listScroller);
+
+        getContentPane().add(list, BorderLayout.CENTER);
+        getContentPane().add(submitButton, BorderLayout.SOUTH);
+    }
+
+    public String saveFile() {
+        JFileChooser whereToSave = new JFileChooser();
+        int saved = whereToSave.showSaveDialog(null);
+        if(saved == JFileChooser.APPROVE_OPTION) {
+            return whereToSave.getSelectedFile().getAbsolutePath();
+        }
+        else return "BIG ERROR";
+    }
+
+    public void fileSentPopup() {
+        int option = JOptionPane.showConfirmDialog(null, "Your file has been sent. Would you" +
+                "like to send another?");
+        if(option == JOptionPane.YES_OPTION) {
+            setVisible(false);
+            controller.view = new ClientDemoView(controller);
+            dispose();
+        } else {
+            dispose();
+        }
+    }
+
+    public void errorMessage() {
+        JOptionPane.showMessageDialog(null, "There was an error processing your request." +
+                " Please close the window and try again. \n Error Code: NOSAVELOCATION");
+    }
+
+    public void promptToContinue() {
+        int continueSending = JOptionPane.showConfirmDialog(null, "Would you like to continue?" +
+                "\n Note: This will send you back to the beginning of the program");
+        if(continueSending == JOptionPane.YES_OPTION) {
+            controller.continueSending();
+            dispose();
+        } else {
+            controller.stopSending();
+            dispose();
+        }
     }
 }
