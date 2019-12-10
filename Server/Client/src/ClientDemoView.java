@@ -14,8 +14,8 @@ public class ClientDemoView extends ClientView {
 
     private ClientController controller;
     protected JTextField serverIP;
-    protected JButton fileSearch;
-    protected JButton sendFile;
+    protected JButton fileSearch = new JButton();
+    protected JButton sendFile = new JButton();
     protected JLabel imageName;
     protected JLabel welcomeLabel;
     protected JLabel imagePreview;
@@ -23,7 +23,7 @@ public class ClientDemoView extends ClientView {
     private ArrayList<String> imageList;
     protected JList<String> imageOptions;
     protected String[] listOptions;
-    protected JButton receiveFile;
+    protected JButton receiveFile = new JButton();
 
     public ClientDemoView(ClientController controller){
         this.controller = controller;

@@ -15,7 +15,6 @@ public class ServerModel {
     static final String PASSWORD = "password";
     static final String TABLE_FILES = "tableFiles";
     static final String TITLE = "title";
-    static final String PATH = "path";
 
     Connection connection;
     public ServerModel() {
@@ -130,8 +129,7 @@ public class ServerModel {
                 while(resultSet.next()) { //returns false when there are no more records
                     int id = resultSet.getInt(ID);
                     String title = resultSet.getString(TITLE);
-                    String path = resultSet.getString(PATH);
-                    FileDataType fileDataType = new FileDataType(id, title, path);
+                    FileDataType fileDataType = new FileDataType(id, title);
                     filesList.add(fileDataType);
                 }
             }catch(SQLException e){
@@ -185,47 +183,57 @@ public class ServerModel {
     public void sendFileName(String Msg, OutputStream out) throws IOException {
         out.write(Msg.getBytes());
     }
-    public void receiveData(InputStream in, OutputStream fileNameOut) throws IOException {
-        ServerController serverController = new ServerController(this);
+    public void receiveData(InputStream in, OutputStream fileNameOut, OutputStream out) throws IOException {
         byte[] bytes = new byte[8192];
         String fileName = null;
-        OutputStream out = null;
+        OutputStream fileout = null;
         int count;
         byte[] code = new byte[1];
         int num = readCode(in, code);
+        System.out.println("goes up to while loop");
         while(num != -1){
+            System.out.println("goes to 1");
         if(num == 1){
             System.out.println("read file name");
             fileName = readFileName(in, fileNameOut);
         }
-        num = readCode(in, code);
+
+            System.out.println("goes to 2");
         if(num == 2) {
 
             String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") +
                     "files" + System.getProperty("file.separator")
                     + fileName;
             System.out.println(filePath);
-            out = new FileOutputStream(filePath);
+            fileout = new FileOutputStream(filePath);
             System.out.println("calls readFile");
-            readFile(in, out, bytes);
+            readFile(in, fileout, bytes);
         }
         if(num == 3){
+            System.out.println("goes into send file list");
             List<FileDataType> filesList = getAllFilesList();
             FileDataType file;
-            out = serverController.clientSocket.getOutputStream();
+            String fileNameEndChar = "%";
             for(int i = 0; i < filesList.size(); i++){
                 file = filesList.get(i);
                 sendFileName(file.getTitle(), out);
+                out.write(fileNameEndChar.getBytes());
             }
             String endChar = "*";
             out.write(endChar.getBytes());
+
+        }
+        if(num == 4){
+
         }
         if(num == 5){
          //continue condition
+
         }
         if(num == -1){
            break;
         }
+        num = readCode(in, code);
         }
         out.close();
         in.close();
