@@ -5,7 +5,7 @@ public class ServerController {
     ServerModel model;
     ServerSocket serverSocket = new ServerSocket(12345);
     Socket clientSocket = serverSocket.accept();
-    boolean closeClient = false;
+
     ServerController(ServerModel model) throws IOException {
         this.model = model;
 
@@ -25,12 +25,7 @@ public class ServerController {
                  "files" + System.getProperty("file.separator")
                 + "fileName.txt");
         model.receiveData(in, fileNameOut);
-        if(closeClient) {
-            clientSocket.close();
-        }
-    }
-    public void closeClientSocket() throws IOException {
-        closeClient = true;
+        clientSocket.close();
     }
     public static void main(String[] args) throws IOException {
        new Thread(){
