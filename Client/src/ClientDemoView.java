@@ -14,8 +14,8 @@ public class ClientDemoView extends ClientView {
 
     private ClientController controller;
     protected JTextField serverIP;
-    protected JButton fileSearch;
-    protected JButton sendFile;
+    protected JButton fileSearch = new JButton();
+    protected JButton sendFile = new JButton();
     protected JLabel imageName;
     protected JLabel welcomeLabel;
     protected JLabel imagePreview;
@@ -23,12 +23,13 @@ public class ClientDemoView extends ClientView {
     private ArrayList<String> imageList;
     protected JList<String> imageOptions;
     protected String[] listOptions;
-    protected JButton receiveFile;
+    protected JButton receiveFile = new JButton();
+
 
     public ClientDemoView(ClientController controller){
         this.controller = controller;
         setPreferredSize(new Dimension(500, 400));
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         Object[] options = {"Send Files", "Receive Files"};
         int sendOrReceive = JOptionPane.showOptionDialog(null, "Welcome to FileSocketFun! " +
@@ -36,11 +37,15 @@ public class ClientDemoView extends ClientView {
                 JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         if(sendOrReceive == JOptionPane.YES_OPTION) {
             setupSendUI();
-        } else {
+        } else if(sendOrReceive == JOptionPane.NO_OPTION){
             String hostIP = JOptionPane.showInputDialog("What's the IP of your server?");
-            serverIP.setText(hostIP);
-            imageList = controller.getImageList();
-            setupReceiveUI();
+            if(hostIP != null) {
+                serverIP.setText(hostIP);
+                imageList = controller.getImageList();
+                setupReceiveUI();
+            }
+        } else {
+            dispose();
         }
         pack();
     }

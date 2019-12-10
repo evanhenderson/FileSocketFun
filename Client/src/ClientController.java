@@ -169,7 +169,7 @@ public class ClientController {
 
     public void continueSending() {
         try {
-            model.closeConnection();
+            model.resetConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -177,7 +177,7 @@ public class ClientController {
 
     public void stopSending() {
         try {
-            model.resetConnection();
+            model.closeConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -59,9 +59,11 @@ public class ClientModel {
      */
     public void beginConnection(String hostIP) {
         try {
+            System.out.println("Attempting to connect");
             socket = new Socket(hostIP, 12345);
             stdIn = socket.getInputStream();
             out = socket.getOutputStream();
+            System.out.println("Connected to socket");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,6 +78,7 @@ public class ClientModel {
      */
     public void sendData(String imageName, String hostIP) throws IOException {
         beginConnection(hostIP);
+        System.out.println("Made it back to send data");
         String filePath = System.getProperty("user.dir")+ System.getProperty("file.separator") + "Client"
                 + System.getProperty("file.separator") +
                 "Cache" + System.getProperty("file.separator") + imageName;
@@ -84,8 +87,11 @@ public class ClientModel {
 
         int confirmation = ensureConnection();
         if(confirmation == 1) {
+            System.out.println("Sending image name");
             sendImageName(imageName);
+            System.out.println("Sending image");
             sendImage();
+            System.out.println("Sent image");
         }
         cachedVersion = new File(filePath);
         fileIn.close();
@@ -108,13 +114,16 @@ public class ClientModel {
      * @throws IOException if the server is already closed
      */
     public void closeConnection() throws IOException {
+        System.out.println("Closing the connection");
         suspendConnection();
+        System.out.println("Disconnected from server");
         if(cachedVersion != null) {
             cachedVersion.deleteOnExit();
         }
         out.close();
         stdIn.close();
         socket.close();
+        System.out.println("Closed all streams");
     }
 
     /**
