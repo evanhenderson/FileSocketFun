@@ -174,7 +174,6 @@ public class ClientModel {
         try {
             beginConnection(hostIP);
             out.write(3);
-            System.out.println("Receiving file names");
             receiveFileNames();
         } catch (IOException e) {
             e.printStackTrace();
@@ -211,6 +210,7 @@ public class ClientModel {
                     next = stdIn.readAllBytes().toString();
                 }
                 fileOut.close();
+                System.out.println("Finished Downloading");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -223,7 +223,6 @@ public class ClientModel {
      * @throws IOException if stIn hasn't been initialized yet
      */
     public void receiveFileNames() throws IOException {
-        System.out.println("reading file names");
         FileOutputStream availableFileNames = new FileOutputStream(System.getProperty("user.dir") + controller.fileSeparator +
                 "Client" + controller.fileSeparator + "Cache" + controller.fileSeparator + "availableFiles.txt");
         int buf = 1;
@@ -235,13 +234,11 @@ public class ClientModel {
              }
              next = stdIn.readNBytes(buf);
          }
-        System.out.println("Starting to read into available Files");
         availableFileNames.close();
         Scanner availableIn = new Scanner(new File(System.getProperty("user.dir") + controller.fileSeparator +
                 "Client" + controller.fileSeparator + "Cache" + controller.fileSeparator + "availableFiles.txt"));
         while(availableIn.hasNext()) {
             String available = availableIn.nextLine();
-            System.out.println(available);
             String fileName = "";
             for(int i = 0; i < available.length(); i++) {
                 if(available.charAt(i) == '%') {
@@ -252,8 +249,6 @@ public class ClientModel {
                 }
             }
         }
-        System.out.println(availableFiles);
-        System.out.println("Done");
     }
 
     /**
