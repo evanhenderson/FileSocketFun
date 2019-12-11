@@ -4,10 +4,11 @@ import java.io.*;
 public class ServerController {
     ServerModel model;
     ServerSocket serverSocket = new ServerSocket(12345);
-    Socket clientSocket = serverSocket.accept();
+    Socket clientSocket;
 
     ServerController(ServerModel model) throws IOException {
         this.model = model;
+        clientSocket = serverSocket.accept();
 
     }
     public void start() throws IOException {
@@ -24,7 +25,10 @@ public class ServerController {
         OutputStream fileNameOut = new FileOutputStream(System.getProperty("user.dir") + System.getProperty("file.separator") +
                  "files" + System.getProperty("file.separator")
                 + "fileName.txt");
-        model.receiveData(in, fileNameOut);
+        OutputStream out3 = clientSocket.getOutputStream();
+        System.out.println("goes into receive data");
+        model.receiveData(in, fileNameOut, out3);
+        System.out.println("leaves receive data");
         clientSocket.close();
     }
     public static void main(String[] args) throws IOException {

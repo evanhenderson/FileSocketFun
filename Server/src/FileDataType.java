@@ -13,7 +13,7 @@ public class FileDataType {
         this.title = title;
 
     }
-    public FileDataType(int id, String title, String path){
+    public FileDataType(int id, String title){
         this.id = id;
         this.title = title;
 

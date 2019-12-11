@@ -24,7 +24,10 @@ public class ClientDemoView extends ClientView {
     protected JList<String> imageOptions;
     protected String[] listOptions;
     protected JButton receiveFile = new JButton();
+<<<<<<< HEAD:Server/Client/src/ClientDemoView.java
+=======
 
+>>>>>>> ad86ad6031592dd7f43fe6da53478b37b4680ec1:Client/src/ClientDemoView.java
 
     public ClientDemoView(ClientController controller){
         this.controller = controller;
