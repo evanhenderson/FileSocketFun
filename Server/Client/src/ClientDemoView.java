@@ -24,11 +24,15 @@ public class ClientDemoView extends ClientView {
     protected JList<String> imageOptions;
     protected String[] listOptions;
     protected JButton receiveFile = new JButton();
+<<<<<<< HEAD:Server/Client/src/ClientDemoView.java
+=======
+
+>>>>>>> ad86ad6031592dd7f43fe6da53478b37b4680ec1:Client/src/ClientDemoView.java
 
     public ClientDemoView(ClientController controller){
         this.controller = controller;
         setPreferredSize(new Dimension(500, 400));
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         Object[] options = {"Send Files", "Receive Files"};
         int sendOrReceive = JOptionPane.showOptionDialog(null, "Welcome to FileSocketFun! " +
@@ -36,11 +40,18 @@ public class ClientDemoView extends ClientView {
                 JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         if(sendOrReceive == JOptionPane.YES_OPTION) {
             setupSendUI();
-        } else {
+        } else if(sendOrReceive == JOptionPane.NO_OPTION){
             String hostIP = JOptionPane.showInputDialog("What's the IP of your server?");
-            serverIP.setText(hostIP);
-            imageList = controller.getImageList();
-            setupReceiveUI();
+            if(hostIP != null) {
+                imageList = controller.getImageList(hostIP);
+                listOptions = new String[imageList.size()];
+                for(int i = 0; i < imageList.size(); i++) {
+                    listOptions[i] = imageList.get(i);
+                }
+                setupReceiveUI();
+            }
+        } else {
+            dispose();
         }
         pack();
     }
@@ -98,7 +109,7 @@ public class ClientDemoView extends ClientView {
     }
 
     public void setupReceiveUI() {
-        imageOptions = new JList<>(imageList.toArray(listOptions));
+        imageOptions = new JList<>(listOptions);
         JScrollPane listScroller = new JScrollPane(imageOptions);
         receiveFile = new JButton("Receive File");
 
@@ -110,6 +121,7 @@ public class ClientDemoView extends ClientView {
 
         getContentPane().add(list, BorderLayout.CENTER);
         getContentPane().add(submitButton, BorderLayout.SOUTH);
+        setVisible(true);
     }
 
     public String saveFile() {
@@ -122,7 +134,7 @@ public class ClientDemoView extends ClientView {
     }
 
     public void fileSentPopup() {
-        int option = JOptionPane.showConfirmDialog(null, "Your file has been sent. Would you" +
+        int option = JOptionPane.showConfirmDialog(null, "Your file has been sent. Would you " +
                 "like to send another?");
         if(option == JOptionPane.YES_OPTION) {
             setVisible(false);
@@ -138,15 +150,4 @@ public class ClientDemoView extends ClientView {
                 " Please close the window and try again. \n Error Code: NOSAVELOCATION");
     }
 
-    public void promptToContinue() {
-        int continueSending = JOptionPane.showConfirmDialog(null, "Would you like to continue?" +
-                "\n Note: This will send you back to the beginning of the program");
-        if(continueSending == JOptionPane.YES_OPTION) {
-            controller.continueSending();
-            dispose();
-        } else {
-            controller.stopSending();
-            dispose();
-        }
-    }
 }

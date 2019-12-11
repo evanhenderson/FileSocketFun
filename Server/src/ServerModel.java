@@ -224,7 +224,18 @@ public class ServerModel {
 
         }
         if(num == 4){
-
+            fileName = readSelection(in, fileNameOut);
+            String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") +
+                    "files" + System.getProperty("file.separator")
+                    + fileName;
+            System.out.println(filePath);
+            InputStream fileIn = new FileInputStream(filePath);
+            byte[] buf = new byte[8192];
+            int len = 0;
+            while((len = fileIn.read(buf)) != -1) {
+                System.out.println("sending file");
+                out.write(buf, 0, len);
+            }
         }
         if(num == 5){
          //continue condition
@@ -244,6 +255,31 @@ public class ServerModel {
         System.out.println(num);
         return num;
     }
+    public String readSelection(InputStream in, OutputStream fileNameOut)throws IOException {
+        int count;
+        String fileName = null;
+        byte[] nameBytes = new byte[1];
+        while ((count = in.read(nameBytes)) != -1){
+            if(Integer.parseInt(String.valueOf(nameBytes[0])) == -1){
+                break;
+            }
+
+            fileNameOut.write(nameBytes, 0, count);
+        }
+        fileNameOut.close();
+        File readName = new File(System.getProperty("user.dir") + System.getProperty("file.separator") +
+                "files" + System.getProperty("file.separator")
+                + "fileName.txt");
+        Scanner sc = new Scanner(readName);
+
+        while(sc.hasNext()){
+            fileName = sc.nextLine();
+
+        }
+        sc.close();
+        return fileName;
+    }
+
     public String readFileName(InputStream in, OutputStream fileNameOut)throws IOException{
         System.out.println("read file name");
         int count;
