@@ -95,7 +95,6 @@ public class ClientController {
                                 " your server's IP address and try again!");
                     }
                     view.warningMessage.setText("Sent! Please select another file to send.");
-                    view.fileSentPopup();
                 }
             }
         });
@@ -107,9 +106,9 @@ public class ClientController {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 try {
-                    view.dispose();
-                    model.closeConnection();
-                }catch(Exception e) {
+                        model.closeConnection();
+                        view.dispose();
+                }catch(IOException e) {
 
                 }
             }
@@ -163,24 +162,16 @@ public class ClientController {
         view.errorMessage();
     }
 
-    public void promptToContinue() {
-        view.fileSentPopup();
+    public void endProgram() {
+        view.dispose();
     }
 
-    public void continueSending() {
-        try {
-            model.resetConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void fileReceivedMessage() {
+        view.fileReceivedPopUp();
     }
 
-    public void stopSending() {
-        try {
-            model.closeConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void fileSentMessage() {
+        view.fileSentPopUp();
     }
 
 }

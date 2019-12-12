@@ -28,7 +28,7 @@ public class ClientDemoView extends ClientView {
     public ClientDemoView(ClientController controller){
         this.controller = controller;
         setPreferredSize(new Dimension(500, 400));
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
         Object[] options = {"Send Files", "Receive Files"};
         int sendOrReceive = JOptionPane.showOptionDialog(null, "Welcome to FileSocketFun! " +
@@ -110,12 +110,10 @@ public class ClientDemoView extends ClientView {
         receiveFile = new JButton("Receive File");
 
         JPanel submitButton = new JPanel();
-        JPanel list = new JPanel();
 
         submitButton.add(receiveFile);
-        list.add(listScroller);
 
-        getContentPane().add(list, BorderLayout.CENTER);
+        getContentPane().add(listScroller, BorderLayout.CENTER);
         getContentPane().add(submitButton, BorderLayout.SOUTH);
         setVisible(true);
     }
@@ -129,21 +127,17 @@ public class ClientDemoView extends ClientView {
         else return "BIG ERROR";
     }
 
-    public void fileSentPopup() {
-        int option = JOptionPane.showConfirmDialog(null, "Your file has been sent. Would you " +
-                "like to send another?");
-        if(option == JOptionPane.YES_OPTION) {
-            setVisible(false);
-            controller.view = new ClientDemoView(controller);
-            dispose();
-        } else {
-            dispose();
-        }
-    }
-
     public void errorMessage() {
         JOptionPane.showMessageDialog(null, "There was an error processing your request." +
                 " Please close the window and try again. \n Error Code: NOSAVELOCATION");
+    }
+
+    public void fileReceivedPopUp() {
+        JOptionPane.showMessageDialog(null, "Your file has been received. Thank you.");
+    }
+
+    public void fileSentPopUp() {
+
     }
 
 }
