@@ -8,6 +8,7 @@
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -36,7 +37,7 @@ public class ClientModel {
     /**
      * This is the output written to files that have been sent
      */
-    protected FileWriter fileOut;
+    protected FileOutputStream fileOut;
 
     /**
      * This is the output sent to the server
@@ -61,9 +62,11 @@ public class ClientModel {
     public void beginConnection(String hostIP) {
         try {
             System.out.println("Attempting to connect");
-            socket = new Socket(hostIP, 12345);
-            stdIn = socket.getInputStream();
-            out = socket.getOutputStream();
+            if(socket == null) {
+                socket = new Socket(hostIP, 12345);
+                stdIn = socket.getInputStream();
+                out = socket.getOutputStream();
+            }
             System.out.println("Connected to socket");
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,9 +97,8 @@ public class ClientModel {
             sendImage();
             System.out.println("Sent image");
         }
-        cachedVersion = new File(filePath);
+        controller.fileSentMessage();
         fileIn.close();
-        controller.promptToContinue();
     }
 
     /**
@@ -189,8 +191,8 @@ public class ClientModel {
         System.out.println("Requesting the file");
         out.write(4);
         out.write(fileName.getBytes());
+        out.write(-1);
         download();
-        controller.promptToContinue();
     }
 
     /**
@@ -203,20 +205,27 @@ public class ClientModel {
             controller.askTheUserWhy();
         } else {
             try {
-                fileOut = new FileWriter(path);
-                String next = stdIn.readAllBytes().toString();
-                while(!next.equals(null)) {
-                    fileOut.write(next);
-                    next = stdIn.readAllBytes().toString();
+                socket.setSoTimeout(500);
+                fileOut = new FileOutputStream(path);
+                System.out.println("Beginning to write");
+                byte[] buf = new byte[8192];
+                int next;
+                while((next = stdIn.read(buf)) != -1) {
+                    fileOut.write(buf, 0 , next);
+                    System.out.println(next);
                 }
-                fileOut.close();
                 System.out.println("Finished Downloading");
+                fileOut.close();
+            } catch (SocketTimeoutException e) {
+                controller.fileReceivedMessage();
+                controller.endProgram();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         }
     }
+
 
     /**
      * Receives the list of file names from the server, and reads it into availableFiles
@@ -259,20 +268,9 @@ public class ClientModel {
         this.controller = controller;
     }
 
-    /**
-     * Tells the server that it is done sending/receiving files.
-     * @throws IOException if out has not yet been initialized
-     */
     public void suspendConnection() throws IOException {
         out.write(-1);
     }
 
-    /**
-     * Tells the server that the user is not done sending/receiving images yet.
-     * @throws IOException throws the exception if out hasn't been initialized yet.
-     */
-    public void resetConnection() throws IOException {
-        out.write(5);
-    }
 
 }
