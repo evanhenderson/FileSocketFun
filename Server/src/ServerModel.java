@@ -1,3 +1,7 @@
+/**
+ * @author Evan Henderson
+ */
+
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
@@ -5,23 +9,43 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ServerModel {
-    //databases need a name
+    /**
+     * @field databases need a name
+     */
     static final String DATABASE_NAME = "serverdatabase.db";
-    //need a connection url (like a command to open a file
+    /**
+     * @field need a connection url (like a command to open a file)
+     */
     static final String CONNECTION_URL = "jdbc:sqlite:database\\"  + DATABASE_NAME;
-    static final String TABLE_USERS = "tableUsers";
+    /**
+     * @field string for id
+     */
     static final String ID = "id";
-    static final String USERNAME = "username";
-    static final String PASSWORD = "password";
+    /**
+     * @field string for table name
+     */
     static final String TABLE_FILES = "tableFiles";
+    /**
+     * @field string for title
+     */
     static final String TITLE = "title";
-
+    /**
+     * @field the connection for database
+     */
     Connection connection;
+
+    /**
+     * constructor for model
+     */
     public ServerModel() {
         getConnection();
         createFilesTable();
 
     }
+
+    /**
+     * sets up connection to database
+     */
     public void getConnection(){
         // have a field for a Connection reference
         try{
@@ -33,6 +57,9 @@ public class ServerModel {
         }
     }
 
+    /**
+     * creates the database table for our file names
+     */
     public void createFilesTable(){
         //to interact with a SQLite database
         //we construct SQL statements
@@ -57,6 +84,11 @@ public class ServerModel {
             }
         }
     }
+
+    /**
+     * inserts into the database table
+     * @param file
+     */
     public void insertFile(FileDataType file){
 
         String sqlInsert = "INSERT INTO " + TABLE_FILES + " VALUES(null, '" +
@@ -72,6 +104,10 @@ public class ServerModel {
         }
     }
 
+    /**
+     * gets all the file names from table to send to client
+     * @return returns an Array List of FileDataTypes with all the file names
+     */
     public List<FileDataType> getAllFilesList(){
         List<FileDataType> filesList = new ArrayList<>();
         //iterate through each record in our table
@@ -101,18 +137,28 @@ public class ServerModel {
         return filesList;
     }
 
-
-
-
-
+    /**
+     * Sends a file name to the client
+     * @param Msg the string containing the file name
+     * @param out the OutputStream used to send to client
+     * @throws IOException
+     */
     public void sendFileName(String Msg, OutputStream out) throws IOException {
         out.write(Msg.getBytes());
     }
+
+    /**
+     * loop that handles all actions performed for the user
+     * @param in used to receive the data
+     * @param fileNameOut used to send data into a file
+     * @param out sends data back to client
+     * @throws IOException
+     */
     public void receiveData(InputStream in, OutputStream fileNameOut, OutputStream out) throws IOException {
         byte[] bytes = new byte[8192];
         String fileName = null;
-        OutputStream fileout = null;
         int count;
+        OutputStream fileout = null;
         byte[] code = new byte[1];
         int num = readCode(in, code);
         System.out.println("goes up to while loop");
@@ -163,7 +209,7 @@ public class ServerModel {
                 System.out.println("sending file");
                 out.write(buf, 0, len);
             }
-            out.write(-1);
+
             System.out.println("Finished sending file");
         }
         if(num == 5){
@@ -178,12 +224,28 @@ public class ServerModel {
         out.close();
         in.close();
     }
+
+    /**
+     * gets the condition code sent by the client to tell server what action is being performed
+     * @param in InputStream used to read condition code
+     * @param code the byte array used to read code
+     * @return returns the condition code as an int
+     * @throws IOException
+     */
     public int readCode(InputStream in, byte[] code)throws IOException{
         in.read(code);
         int num = Integer.parseInt(String.valueOf(code[0]));
         System.out.println(num);
         return num;
     }
+
+    /**
+     * Reads the selected file name from client
+     * @param in used to read data from client
+     * @param fileNameOut OutputStream used to write file name to a file to read from
+     * @return returns the file name that needs to be sent to the client
+     * @throws IOException
+     */
     public String readSelection(InputStream in, OutputStream fileNameOut)throws IOException {
         int count;
         String fileName = null;
@@ -212,6 +274,13 @@ public class ServerModel {
         return fileName;
     }
 
+    /**
+     * Reads file name for file being received from client
+     * @param in used to read bytes from client
+     * @param fileNameOut used to write file name to a txt file
+     * @return returns file name as String
+     * @throws IOException
+     */
     public String readFileName(InputStream in, OutputStream fileNameOut)throws IOException{
         System.out.println("read file name");
         int count;
@@ -242,6 +311,14 @@ public class ServerModel {
                     + fileName);
         return fileName;
     }
+
+    /**
+     * Writes the file received from client to a file
+     * @param in reads file bytes
+     * @param out used to write bytes to file
+     * @param bytes byte array used in while loop
+     * @throws IOException
+     */
     public void readFile(InputStream in, OutputStream out, byte[] bytes)throws IOException{
         int count;
         while ((count = in.read(bytes)) != -1) {
