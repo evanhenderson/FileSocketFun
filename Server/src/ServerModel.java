@@ -314,6 +314,7 @@ public class ServerModel {
 
     /**
      * Writes the file received from client to a file
+     * logic from: https://stackoverflow.com/questions/6099636/sending-files-through-sockets
      * @param in reads file bytes
      * @param out used to write bytes to file
      * @param bytes byte array used in while loop
