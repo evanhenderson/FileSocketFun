@@ -19,7 +19,6 @@ public class ServerModel {
     Connection connection;
     public ServerModel() {
         getConnection();
-        createUsersTable();
         createFilesTable();
 
     }
@@ -33,30 +32,7 @@ public class ServerModel {
             e.printStackTrace();
         }
     }
-    public void createUsersTable(){
-        //to interact with a SQLite database
-        //we construct SQL statements
-        //these are strings that we try to get SQLite to execute
-        // CREATE TABLE tableContacts(id INTEGER PRIMARY KEY AUTOINCREMENT,
-        // name TEXT,
-        // phoneNumber TEXT,
-        // imagePath TEXT)
-        String sqlCreate = "CREATE TABLE " + TABLE_USERS + "(" +
-                ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + USERNAME +
-                " TEXT," + PASSWORD + " TEXT)";
 
-        //primary key uniquely identifies records
-        // autoincrement means let sqlite assign unique ids
-        // start at 1 and go up by 1
-        if (connection != null){
-            try{
-                Statement statement = connection.createStatement();
-                statement.execute(sqlCreate);
-            }catch(SQLException e){
-
-            }
-        }
-    }
     public void createFilesTable(){
         //to interact with a SQLite database
         //we construct SQL statements
@@ -95,21 +71,7 @@ public class ServerModel {
             }
         }
     }
-    public void insertUser(UserDataType user){
 
-        String sqlInsert = "INSERT INTO " + TABLE_USERS + " VALUES(null, '" +
-                user.getUsername() + "', '" +
-                user.getPassword() + "')";
-        System.out.println(sqlInsert);
-        if (connection != null){
-            try{
-                Statement statement = connection.createStatement();
-                statement.execute(sqlInsert);
-            }catch(SQLException e){
-                e.printStackTrace();
-            }
-        }
-    }
     public List<FileDataType> getAllFilesList(){
         List<FileDataType> filesList = new ArrayList<>();
         //iterate through each record in our table
@@ -138,45 +100,8 @@ public class ServerModel {
         }
         return filesList;
     }
-    public List<UserDataType> getAllUsersList(){
-        List<UserDataType> usersList = new ArrayList<>();
-        //iterate through each record in our table
-        //extract the column values
-        //create a contract
-        //add the contact to the list
-        //much like I/O while(inFile.nextLine()) {}
-        //while (inFile.eof() {}
-        //SELECT * FROM tableContacts
-        String sqlSelect = "SELECT * FROM " + TABLE_USERS;
-        System.out.println(sqlSelect);
-        if (connection != null){
-            try {
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sqlSelect);
-                //need to advance to the first record (if there is one)
-                while(resultSet.next()) { //returns false when there are no more records
-                    int id = resultSet.getInt(ID);
-                    String username = resultSet.getString(USERNAME);
-                    String password = resultSet.getString(PASSWORD);
-                    UserDataType usersDataType = new UserDataType(id, username, password);
-                    usersList.add(usersDataType);
-                }
-            }catch(SQLException e){
-                e.printStackTrace();
-            }
-        }
-        return usersList;
-    }
-    public void closeConnection(){
-        //close the connection (just like a file we've opened)
-        if (connection != null){
-            try{
-                connection.close();
-            }catch(SQLException e){
-                e.printStackTrace();
-            }
-        }
-    }
+
+
 
 
 
@@ -224,7 +149,9 @@ public class ServerModel {
 
         }
         if(num == 4){
+            System.out.println("sending requested file");
             fileName = readSelection(in, fileNameOut);
+            System.out.println("File Name:" + fileName);
             String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") +
                     "files" + System.getProperty("file.separator")
                     + fileName;
@@ -236,6 +163,8 @@ public class ServerModel {
                 System.out.println("sending file");
                 out.write(buf, 0, len);
             }
+            out.write(-1);
+            System.out.println("Finished sending file");
         }
         if(num == 5){
          //continue condition
@@ -266,15 +195,18 @@ public class ServerModel {
 
             fileNameOut.write(nameBytes, 0, count);
         }
+        System.out.println("put file name in txt");
         fileNameOut.close();
         File readName = new File(System.getProperty("user.dir") + System.getProperty("file.separator") +
                 "files" + System.getProperty("file.separator")
                 + "fileName.txt");
+        System.out.println("made file object");
         Scanner sc = new Scanner(readName);
+        System.out.println("scanner");
 
         while(sc.hasNext()){
             fileName = sc.nextLine();
-
+            System.out.println("putting from scanner into fileName:" + fileName);
         }
         sc.close();
         return fileName;
@@ -317,18 +249,7 @@ public class ServerModel {
 
         }
     }
-    public boolean authenticate(String username, String password){
-        return false;
-    }
-    public void storeImage(){
 
-    }
-    public void retrieve(){
-
-    }
-    public void stop(){
-        //client.stopConnection();
-    }
 
 
 
