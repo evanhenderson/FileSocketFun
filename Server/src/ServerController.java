@@ -1,16 +1,39 @@
-import java.awt.desktop.OpenURIEvent;
+/**
+ * @author Evan Henderson
+ */
+
 import java.net.*;
 import java.io.*;
 public class ServerController {
+    /**
+     * @field has a model object
+     */
     ServerModel model;
+    /**
+     * @field this is the server socket
+     */
     ServerSocket serverSocket = new ServerSocket(12345);
+    /**
+     * @field socket for the client
+     */
     Socket clientSocket;
 
+    /**
+     * This is the constructor for the controller
+     * @param model
+     * @throws IOException
+     */
     ServerController(ServerModel model) throws IOException {
         this.model = model;
         clientSocket = serverSocket.accept();
 
     }
+
+    /**
+     * starts server by initializing out/in streams and calling recieveData from model,
+     * then closing the clientSocket at the end
+     * @throws IOException
+     */
     public void start() throws IOException {
         OutputStream out = null;
         InputStream in = null;
@@ -31,6 +54,13 @@ public class ServerController {
         System.out.println("leaves receive data");
         clientSocket.close();
     }
+
+    /**
+     * The main that contains the Thread for the client
+     * Source for Thread code: https://stackoverflow.com/questions/6099636/sending-files-through-sockets
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
        new Thread(){
            public void run(){

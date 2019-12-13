@@ -1,3 +1,7 @@
+/**
+ * @author Evan Henderson
+ */
+
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
@@ -5,24 +9,43 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ServerModel {
-    //databases need a name
+    /**
+     * @field databases need a name
+     */
     static final String DATABASE_NAME = "serverdatabase.db";
-    //need a connection url (like a command to open a file
+    /**
+     * @field need a connection url (like a command to open a file)
+     */
     static final String CONNECTION_URL = "jdbc:sqlite:database\\"  + DATABASE_NAME;
-    static final String TABLE_USERS = "tableUsers";
+    /**
+     * @field string for id
+     */
     static final String ID = "id";
-    static final String USERNAME = "username";
-    static final String PASSWORD = "password";
+    /**
+     * @field string for table name
+     */
     static final String TABLE_FILES = "tableFiles";
+    /**
+     * @field string for title
+     */
     static final String TITLE = "title";
-
+    /**
+     * @field the connection for database
+     */
     Connection connection;
+
+    /**
+     * constructor for model
+     */
     public ServerModel() {
         getConnection();
-        createUsersTable();
         createFilesTable();
 
     }
+
+    /**
+     * sets up connection to database
+     */
     public void getConnection(){
         // have a field for a Connection reference
         try{
@@ -33,30 +56,10 @@ public class ServerModel {
             e.printStackTrace();
         }
     }
-    public void createUsersTable(){
-        //to interact with a SQLite database
-        //we construct SQL statements
-        //these are strings that we try to get SQLite to execute
-        // CREATE TABLE tableContacts(id INTEGER PRIMARY KEY AUTOINCREMENT,
-        // name TEXT,
-        // phoneNumber TEXT,
-        // imagePath TEXT)
-        String sqlCreate = "CREATE TABLE " + TABLE_USERS + "(" +
-                ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + USERNAME +
-                " TEXT," + PASSWORD + " TEXT)";
 
-        //primary key uniquely identifies records
-        // autoincrement means let sqlite assign unique ids
-        // start at 1 and go up by 1
-        if (connection != null){
-            try{
-                Statement statement = connection.createStatement();
-                statement.execute(sqlCreate);
-            }catch(SQLException e){
-
-            }
-        }
-    }
+    /**
+     * creates the database table for our file names
+     */
     public void createFilesTable(){
         //to interact with a SQLite database
         //we construct SQL statements
@@ -81,6 +84,11 @@ public class ServerModel {
             }
         }
     }
+
+    /**
+     * inserts into the database table
+     * @param file
+     */
     public void insertFile(FileDataType file){
 
         String sqlInsert = "INSERT INTO " + TABLE_FILES + " VALUES(null, '" +
@@ -95,21 +103,11 @@ public class ServerModel {
             }
         }
     }
-    public void insertUser(UserDataType user){
 
-        String sqlInsert = "INSERT INTO " + TABLE_USERS + " VALUES(null, '" +
-                user.getUsername() + "', '" +
-                user.getPassword() + "')";
-        System.out.println(sqlInsert);
-        if (connection != null){
-            try{
-                Statement statement = connection.createStatement();
-                statement.execute(sqlInsert);
-            }catch(SQLException e){
-                e.printStackTrace();
-            }
-        }
-    }
+    /**
+     * gets all the file names from table to send to client
+     * @return returns an Array List of FileDataTypes with all the file names
+     */
     public List<FileDataType> getAllFilesList(){
         List<FileDataType> filesList = new ArrayList<>();
         //iterate through each record in our table
@@ -138,56 +136,29 @@ public class ServerModel {
         }
         return filesList;
     }
-    public List<UserDataType> getAllUsersList(){
-        List<UserDataType> usersList = new ArrayList<>();
-        //iterate through each record in our table
-        //extract the column values
-        //create a contract
-        //add the contact to the list
-        //much like I/O while(inFile.nextLine()) {}
-        //while (inFile.eof() {}
-        //SELECT * FROM tableContacts
-        String sqlSelect = "SELECT * FROM " + TABLE_USERS;
-        System.out.println(sqlSelect);
-        if (connection != null){
-            try {
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sqlSelect);
-                //need to advance to the first record (if there is one)
-                while(resultSet.next()) { //returns false when there are no more records
-                    int id = resultSet.getInt(ID);
-                    String username = resultSet.getString(USERNAME);
-                    String password = resultSet.getString(PASSWORD);
-                    UserDataType usersDataType = new UserDataType(id, username, password);
-                    usersList.add(usersDataType);
-                }
-            }catch(SQLException e){
-                e.printStackTrace();
-            }
-        }
-        return usersList;
-    }
-    public void closeConnection(){
-        //close the connection (just like a file we've opened)
-        if (connection != null){
-            try{
-                connection.close();
-            }catch(SQLException e){
-                e.printStackTrace();
-            }
-        }
-    }
 
-
-
+    /**
+     * Sends a file name to the client
+     * @param Msg the string containing the file name
+     * @param out the OutputStream used to send to client
+     * @throws IOException
+     */
     public void sendFileName(String Msg, OutputStream out) throws IOException {
         out.write(Msg.getBytes());
     }
+
+    /**
+     * loop that handles all actions performed for the user
+     * @param in used to receive the data
+     * @param fileNameOut used to send data into a file
+     * @param out sends data back to client
+     * @throws IOException
+     */
     public void receiveData(InputStream in, OutputStream fileNameOut, OutputStream out) throws IOException {
         byte[] bytes = new byte[8192];
         String fileName = null;
-        OutputStream fileout = null;
         int count;
+        OutputStream fileout = null;
         byte[] code = new byte[1];
         int num = readCode(in, code);
         System.out.println("goes up to while loop");
@@ -224,7 +195,9 @@ public class ServerModel {
 
         }
         if(num == 4){
+            System.out.println("sending requested file");
             fileName = readSelection(in, fileNameOut);
+            System.out.println("File Name:" + fileName);
             String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") +
                     "files" + System.getProperty("file.separator")
                     + fileName;
@@ -236,6 +209,8 @@ public class ServerModel {
                 System.out.println("sending file");
                 out.write(buf, 0, len);
             }
+
+            System.out.println("Finished sending file");
         }
         if(num == 5){
          //continue condition
@@ -249,12 +224,28 @@ public class ServerModel {
         out.close();
         in.close();
     }
+
+    /**
+     * gets the condition code sent by the client to tell server what action is being performed
+     * @param in InputStream used to read condition code
+     * @param code the byte array used to read code
+     * @return returns the condition code as an int
+     * @throws IOException
+     */
     public int readCode(InputStream in, byte[] code)throws IOException{
         in.read(code);
         int num = Integer.parseInt(String.valueOf(code[0]));
         System.out.println(num);
         return num;
     }
+
+    /**
+     * Reads the selected file name from client
+     * @param in used to read data from client
+     * @param fileNameOut OutputStream used to write file name to a file to read from
+     * @return returns the file name that needs to be sent to the client
+     * @throws IOException
+     */
     public String readSelection(InputStream in, OutputStream fileNameOut)throws IOException {
         int count;
         String fileName = null;
@@ -266,20 +257,30 @@ public class ServerModel {
 
             fileNameOut.write(nameBytes, 0, count);
         }
+        System.out.println("put file name in txt");
         fileNameOut.close();
         File readName = new File(System.getProperty("user.dir") + System.getProperty("file.separator") +
                 "files" + System.getProperty("file.separator")
                 + "fileName.txt");
+        System.out.println("made file object");
         Scanner sc = new Scanner(readName);
+        System.out.println("scanner");
 
         while(sc.hasNext()){
             fileName = sc.nextLine();
-
+            System.out.println("putting from scanner into fileName:" + fileName);
         }
         sc.close();
         return fileName;
     }
 
+    /**
+     * Reads file name for file being received from client
+     * @param in used to read bytes from client
+     * @param fileNameOut used to write file name to a txt file
+     * @return returns file name as String
+     * @throws IOException
+     */
     public String readFileName(InputStream in, OutputStream fileNameOut)throws IOException{
         System.out.println("read file name");
         int count;
@@ -310,6 +311,15 @@ public class ServerModel {
                     + fileName);
         return fileName;
     }
+
+    /**
+     * Writes the file received from client to a file
+     * logic from: https://stackoverflow.com/questions/6099636/sending-files-through-sockets
+     * @param in reads file bytes
+     * @param out used to write bytes to file
+     * @param bytes byte array used in while loop
+     * @throws IOException
+     */
     public void readFile(InputStream in, OutputStream out, byte[] bytes)throws IOException{
         int count;
         while ((count = in.read(bytes)) != -1) {
@@ -317,18 +327,7 @@ public class ServerModel {
 
         }
     }
-    public boolean authenticate(String username, String password){
-        return false;
-    }
-    public void storeImage(){
 
-    }
-    public void retrieve(){
-
-    }
-    public void stop(){
-        //client.stopConnection();
-    }
 
 
 
