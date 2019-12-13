@@ -61,13 +61,11 @@ public class ClientModel {
      */
     public void beginConnection(String hostIP) {
         try {
-            System.out.println("Attempting to connect");
             if(socket == null) {
                 socket = new Socket(hostIP, 12345);
                 stdIn = socket.getInputStream();
                 out = socket.getOutputStream();
             }
-            System.out.println("Connected to socket");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,7 +80,6 @@ public class ClientModel {
      */
     public void sendData(String imageName, String hostIP) throws IOException {
         beginConnection(hostIP);
-        System.out.println("Made it back to send data");
         String filePath = System.getProperty("user.dir")+ System.getProperty("file.separator") + "Client"
                 + System.getProperty("file.separator") +
                 "Cache" + System.getProperty("file.separator") + imageName;
@@ -91,14 +88,13 @@ public class ClientModel {
 
         int confirmation = ensureConnection();
         if(confirmation == 1) {
-            System.out.println("Sending image name");
             sendImageName(imageName);
-            System.out.println("Sending image");
             sendImage();
-            System.out.println("Sent image");
         }
         controller.fileSentMessage();
         fileIn.close();
+        out.write(-1);
+        closeConnection();
     }
 
     /**
@@ -117,16 +113,13 @@ public class ClientModel {
      * @throws IOException if the server is already closed
      */
     public void closeConnection() throws IOException {
-        System.out.println("Closing the connection");
         suspendConnection();
-        System.out.println("Disconnected from server");
         if(cachedVersion != null) {
             cachedVersion.deleteOnExit();
         }
         out.close();
         stdIn.close();
         socket.close();
-        System.out.println("Closed all streams");
     }
 
     /**
@@ -138,10 +131,8 @@ public class ClientModel {
         byte[] buf = new byte[8192];
         int len = 0;
         while((len = fileIn.read(buf)) != -1) {
-            System.out.println("sending parcel");
             out.write(buf, 0, len);
         }
-        System.out.println("sent");
     }
 
     /**
@@ -188,7 +179,6 @@ public class ClientModel {
      * @throws IOException
      */
     public void requestFile(String fileName) throws IOException {
-        System.out.println("Requesting the file");
         out.write(4);
         out.write(fileName.getBytes());
         out.write(-1);
@@ -199,7 +189,6 @@ public class ClientModel {
      * Downloads a given file from the server
      */
     public void download() {
-        System.out.println("Downloading the file");
         String path = controller.chooseFileSaveLocation();
         if(path == "BIG ERROR") {
             controller.askTheUserWhy();
@@ -207,14 +196,11 @@ public class ClientModel {
             try {
                 socket.setSoTimeout(500);
                 fileOut = new FileOutputStream(path);
-                System.out.println("Beginning to write");
                 byte[] buf = new byte[8192];
                 int next;
                 while((next = stdIn.read(buf)) != -1) {
                     fileOut.write(buf, 0 , next);
-                    System.out.println(next);
                 }
-                System.out.println("Finished Downloading");
                 fileOut.close();
             } catch (SocketTimeoutException e) {
                 controller.fileReceivedMessage();
@@ -269,7 +255,7 @@ public class ClientModel {
     }
 
     public void suspendConnection() throws IOException {
-        out.write(-1);
+        out.write("-1".getBytes());
     }
 
 

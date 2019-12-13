@@ -4,6 +4,7 @@
  * @author Nora El Naby
  *
  * @version 1.0.1
+ * @see no borrowed code
  */
 
 import javax.swing.*;
@@ -11,6 +12,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class ClientDemoView extends ClientView {
+
 
     private ClientController controller;
     protected JTextField serverIP;
@@ -45,9 +47,11 @@ public class ClientDemoView extends ClientView {
                     listOptions[i] = imageList.get(i);
                 }
                 setupReceiveUI();
+            } else {
+                System.exit(0);
             }
         } else {
-            dispose();
+            System.exit(0);
         }
         pack();
     }
@@ -137,7 +141,8 @@ public class ClientDemoView extends ClientView {
     }
 
     public void fileSentPopUp() {
-
+        JOptionPane.showMessageDialog(null, "Your file has been sent! Thank you for using" +
+                " FileSocketFun");
     }
 
 }
