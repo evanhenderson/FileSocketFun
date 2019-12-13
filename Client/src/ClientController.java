@@ -88,13 +88,12 @@ public class ClientController {
                     view.warningMessage.setText("Please select an image to send!");
                 } else {
                     try {
-                        System.out.println("Send button was hit.");
                         model.sendData(imageName, serverIP);
                     } catch (IOException e) {
                         view.warningMessage.setText("Something went wrong while sending you image. Please double check" +
                                 " your server's IP address and try again!");
                     }
-                    view.warningMessage.setText("Sent! Please select another file to send.");
+                    view.dispose();
                 }
             }
         });
@@ -106,7 +105,9 @@ public class ClientController {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 try {
-                        model.closeConnection();
+                        if(model.stdIn != null) {
+                            model.closeConnection();
+                        }
                         view.dispose();
                 }catch(IOException e) {
 
