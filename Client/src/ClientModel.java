@@ -191,7 +191,7 @@ public class ClientModel {
     public void download() {
         String path = controller.chooseFileSaveLocation();
         if(path == "BIG ERROR") {
-            controller.askTheUserWhy();
+            controller.invalidSaveLocationMessage();
         } else {
             try {
                 socket.setSoTimeout(500);
@@ -254,6 +254,11 @@ public class ClientModel {
         this.controller = controller;
     }
 
+    /**
+     * Tells the server to suspend the connection by writing it a -1
+     * @throws IOException if the output stream to the socket has not yet been initialized
+     * (ie. if this is called before beginConnection).
+     */
     public void suspendConnection() throws IOException {
         out.write("-1".getBytes());
     }
