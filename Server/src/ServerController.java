@@ -62,13 +62,13 @@ public class ServerController {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-       new Thread(){
+        new Thread(){
            public void run(){
                try{
                    ServerController controller =  new ServerController(new ServerModel());
                    controller.start();
                }catch(IOException e){
-                   e.printStackTrace();
+                   System.out.println("Client has disconnected");
                }
            }
        }.start();

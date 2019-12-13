@@ -3,6 +3,7 @@
  */
 
 import java.io.*;
+import java.net.SocketException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,10 @@ public class ServerModel {
      * @field the connection for database
      */
     Connection connection;
-
+    /**
+    * @field boolean to check for receiving file being done
+    */
+    boolean done = false;
     /**
      * constructor for model
      */
@@ -164,23 +168,20 @@ public class ServerModel {
         System.out.println("goes up to while loop");
         while(num != -1){
             System.out.println("goes to 1");
-        if(num == 1){
+            if(num == 1){
             System.out.println("read file name");
             fileName = readFileName(in, fileNameOut);
-        }
-
-            System.out.println("goes to 2");
-        if(num == 2) {
-
-            String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") +
+            } else if(num == 2) {
+                System.out.println("goes to 2");
+                String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") +
                     "files" + System.getProperty("file.separator")
                     + fileName;
-            System.out.println(filePath);
-            fileout = new FileOutputStream(filePath);
-            System.out.println("calls readFile");
-            readFile(in, fileout, bytes);
+                System.out.println(filePath);
+                fileout = new FileOutputStream(filePath);
+                System.out.println("calls readFile");
+                readFile(in, fileout, bytes);
         }
-        if(num == 3){
+        else if(num == 3){
             System.out.println("goes into send file list");
             List<FileDataType> filesList = getAllFilesList();
             FileDataType file;
@@ -194,7 +195,7 @@ public class ServerModel {
             out.write(endChar.getBytes());
 
         }
-        if(num == 4){
+        else if(num == 4){
             System.out.println("sending requested file");
             fileName = readSelection(in, fileNameOut);
             System.out.println("File Name:" + fileName);
@@ -212,14 +213,18 @@ public class ServerModel {
 
             System.out.println("Finished sending file");
         }
-        if(num == 5){
+        else if(num == 5){
          //continue condition
 
         }
-        if(num == -1){
+        System.out.println("goes to readCode() in while loop");
+        num = readCode(in, code);
+        if(num == -1 || done){
+            System.out.println("goes to -1");
+            out.write("-1".getBytes());
            break;
         }
-        num = readCode(in, code);
+
         }
         out.close();
         in.close();
@@ -326,9 +331,7 @@ public class ServerModel {
             out.write(bytes, 0, count);
 
         }
+        done = true;
     }
-
-
-
 
 }
